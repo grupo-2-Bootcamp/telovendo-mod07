@@ -25,7 +25,7 @@ from telovendo.views import LoginView, InternoView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Index.as_view(), name='index'),
-    path('login/', LoginView.as_view(), name="login"),
+    path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('interno/', InternoView.as_view(), name='interno'),
 ]

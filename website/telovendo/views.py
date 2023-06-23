@@ -39,5 +39,5 @@ class LoginView(TemplateView):
 class InternoView(TemplateView):
     template_name = "internal.html"
     def get(self, request, *args, **kwargs):
-        title = "Bienvenidos al Sitio Interno de Telovendo"
+        title = "Sitio Interno de Telovendo"
         return render(request, self.template_name, {"title": title,})

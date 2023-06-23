@@ -1,5 +1,6 @@
 .navbar-color { 
-    background-color: #e4980c;
+    background-color: #4570fd;
+    color: White;
 }
 
 .navbar-color-proveedores  { 
@@ -11,8 +12,10 @@
 }
 
 .footer{
-    background-color: #f7d391;
+    background-color: #4570fd;
     text-align: center;
+    font-weight: bold;
+    color: White;
 }
 
 .footer-color-proveedores{
