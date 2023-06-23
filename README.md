@@ -44,3 +44,7 @@ Los directorios principales de Django son:
 - telovendo: Contiene la aplicación interna para usuarios, modelos y relacionados
 
 También existe una carpeta adicional **docs** que contiene otros archivos de documentación de la aplicación.
+
+## Superusuario
+
+El superusuario se encuentra en el archivo usuarios.md

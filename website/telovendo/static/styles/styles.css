@@ -1,0 +1,44 @@
+.navbar-color { 
+    background-color: #e4980c;
+}
+
+.navbar-color-proveedores  { 
+    background-color: #40ad01;
+}
+
+.navbar-color-trabajadores  { 
+    background-color: #1fe0d0;
+}
+
+.footer{
+    background-color: #f7d391;
+    text-align: center;
+}
+
+.footer-color-proveedores{
+    background-color: #40ad01;
+    text-align: center;
+}
+
+.footer-color-trabajadores  { 
+    background-color: #1fe0d0;
+    text-align: center;
+}
+
+
+.div-logo{
+    width: 205px;
+    height: 205px;
+    background-image: url("/static/images/logo.png");
+    margin: 0 auto;
+}
+
+.logo-navbar{
+    width: 30px;
+    height: 30px;
+}
+
+.logo-footer{
+    width: 50px;
+    height: 50px;
+}
