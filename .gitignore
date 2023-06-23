@@ -8,3 +8,4 @@
 .venv
 *.py[cod]
 *$py.class
+.env
