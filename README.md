@@ -45,6 +45,6 @@ Los directorios principales de Django son:
 
 También existe una carpeta adicional **docs** que contiene otros archivos de documentación de la aplicación.
 
-## Superusuario
+## Usuarios
 
-El superusuario se encuentra en el archivo usuarios.md
+Los usuarios se encuentran en el archivo usuarios.md
