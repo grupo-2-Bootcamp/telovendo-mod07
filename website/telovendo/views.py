@@ -22,7 +22,7 @@ class LoginView(TemplateView):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect('interno')
+                    return redirect('internal')
                     # if request.user.groups.filter(name='Trabajadores').exists():
                     #     return redirect('sitiointerno-trabajadores')
                     # elif request.user.groups.filter(name='Clientes').exists():
@@ -39,5 +39,5 @@ class LoginView(TemplateView):
 class InternoView(TemplateView):
     template_name = "internal.html"
     def get(self, request, *args, **kwargs):
-        title = "Sitio Interno de Telovendo"
+        title = "Bienvenido al sistema de compras"
         return render(request, self.template_name, {"title": title,})

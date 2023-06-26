@@ -1,4 +1,4 @@
-{% extends "base_part.html" %}
+{% extends "base_login_part.html" %}
 {% block content %}
 
 <div class="d-flex justify-content-center">
@@ -6,8 +6,8 @@
     <form method="post">
         {% if form.errors %}
         <div class="alert alert-danger mt-3" role="alert">
-            <h4>Errores</h4>
-            {{ form.errors }}
+            <h4><i class="fa-solid fa-triangle-exclamation"></i> Error</h4>
+            {{ form.errors.username }}
         </div>
         {% endif %}
 
@@ -19,15 +19,15 @@
                 <h6 class="card-subtitle mb-2 text-body-secondary">Ingresa tus credenciales</h6>
                 <div class="form-group">
                     <label for="id_username">Usuario</label>
-                    <input type="text" class="form-control" id="id_username" name="username" placeholder="Usuario" required>
-                    {% comment %} {{ form.username }} {% endcomment %}
+                    <input type="text" class="form-control" id="id_username" name="username" placeholder="Ingrese su nombre de usuario" required>
                 </div>
                 <div class="form-group">
                     <label for="id_password">Contraseña</label>
-                    <input type="password" class="form-control" id="id_password" name="password" placeholder="Contraseña" required>
-                    {% comment %} {{ form.password }} {% endcomment %}
+                    <input type="password" class="form-control" id="id_password" name="password" placeholder="Ingrese su contraseña" required>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Ingresar</button>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary mt-3"><i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión</button>
+                </div>
             </div>
         </div>
     </form>
