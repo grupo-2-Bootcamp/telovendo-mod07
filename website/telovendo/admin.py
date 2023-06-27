@@ -1,5 +1,7 @@
 from django.contrib import admin
 from telovendo.models import Estado_Pedido, MetodoPago, Empresas, Productos, Pedidos, Direcciones, Detalles_Pedido, CustomUser
+from django.contrib.auth.admin import UserAdmin
+# from django.contrib.auth.models import User
 # from telovendo.models import Estado_Pedido, MetodoPago, Empresas, Productos, Pedidos, Direcciones, Detalles_Pedido,Users
 
 # Register your models here.
@@ -60,12 +62,12 @@ class Direcciones_Admin(admin.ModelAdmin):
 
 admin.site.register(Direcciones, Direcciones_Admin)
 
-# class Users_Admin(admin.ModelAdmin):
-#     list_display = ['username', 'email', 'first_name', 'last_name']
-#     list_filter = ['username']
-#     search_fields = ['username', 'email', 'first_name', 'last_name']
-#     ordering = ['username', 'email', 'first_name', 'last_name']
-#     fields = ['username', 'email', 'first_name', 'last_name']
-# admin.site.register(CustomUser, Users_Admin)
+class Users_Admin(UserAdmin):
+    list_display = ['username', 'email', 'first_name', 'last_name', 'run']
+    list_filter = ['username']
+    search_fields = ['username', 'email', 'first_name', 'last_name']
+    ordering = ['username', 'email', 'first_name', 'last_name']
+
+admin.site.register(CustomUser, Users_Admin)
 # admin.site.unregister(User)  # Desregistrando UserAdmin predeterminado
-# admin.site.register(Users)
+# admin.site.register(User)
