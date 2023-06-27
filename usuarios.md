@@ -6,4 +6,11 @@
 # Usuario
 
     username: isoto
-    password: CARONTE23  
+    password: CARONTE23
+    grupo:    Clientes
+
+# Usuario
+
+    username: mmoragues
+    password: ESTIGIA23
+    grupo:    Trabajadores - Staff
