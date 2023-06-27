@@ -1,6 +1,8 @@
 from django.utils import timezone
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,AbstractUser
+from django.contrib.auth import get_user_model
+
 # Create your models here.
 
 class Productos(models.Model):
@@ -41,7 +43,7 @@ class MetodoPago(models.Model):
 
 
 class Empresas(models.Model):
-    rut = models.CharField(max_length=10, null=False, blank=False)
+    rut = models.CharField(max_length=12, null=False, blank=False)
     nombre_empresa = models.CharField(max_length=30, null=False, blank=False)
 
     def __str__(self):
@@ -50,17 +52,21 @@ class Empresas(models.Model):
         verbose_name = 'Empresa'
         verbose_name_plural = 'Empresas'
 
-
-class Users(models.Model):
+class CustomUser(AbstractUser):
+    run = models.CharField(max_length=12, null=False, blank=False)
     idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=True)
-    username = models.CharField(max_length=30, null=False, blank=False)
-    first_name = models.CharField(max_length=45, null=False, blank=False)
-    last_name = models.CharField(max_length=45, null=False, blank=False)
-    password = models.CharField(max_length=30, null=False, blank=False)
     group = models.CharField(max_length=45, null=True)
 
     def __str__(self):
         return self.username
+# class Users(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.DO_NOTHING, default = None)
+#     idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=True)
+#     group = models.CharField(max_length=45, null=True)
+
+#     def __str__(self):
+#         return self.user.username
+
     
 class Direcciones(models.Model):
     idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=False, blank=False)
@@ -82,7 +88,7 @@ class Pedidos(models.Model):
     idMetodoPago = models.ForeignKey(MetodoPago, on_delete=models.DO_NOTHING, null=False, blank=False)
     idEstado = models.ForeignKey(Estado_Pedido, on_delete=models.DO_NOTHING, null=False, blank=False)
     idDireccion = models.ForeignKey(Direcciones, on_delete=models.DO_NOTHING, null=False, blank=False)
-    idUsuario = models.ForeignKey(Users, on_delete=models.DO_NOTHING, null=True)
+    idUsuario = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True)
     idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=True)
     total_pedido = models.IntegerField(null=False, blank=False)
 
