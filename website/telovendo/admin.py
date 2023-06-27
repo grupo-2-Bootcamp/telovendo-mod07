@@ -45,7 +45,7 @@ class Pedidos_Admin(admin.ModelAdmin):
     list_filter = ['fecha_creacion', 'idEstado', 'idUsuario', 'idEmpresa']
     search_fields = ['fecha_creacion', 'idEstado', 'idUsuario', 'idEmpresa']
     ordering = ['fecha_creacion', 'idEstado']
-    fields = ['fecha_creacion', 'idMetodoPago', 'idEstado', 'idDireccion', 'idUsuario', 'idEmpresa']
+    fields = ['fecha_creacion', 'idMetodoPago', 'idEstado', 'idDireccion', 'idUsuario', 'idEmpresa','total_pedido']
 
 admin.site.register(Pedidos, Pedidos_Admin)
 
@@ -58,4 +58,3 @@ class Direcciones_Admin(admin.ModelAdmin):
     fields = ['idEmpresa', 'direccion', 'numero', 'Comuna', 'descripcion']
 
 admin.site.register(Direcciones, Direcciones_Admin)
-

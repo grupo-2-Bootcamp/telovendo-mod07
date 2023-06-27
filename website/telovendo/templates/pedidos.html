@@ -1,0 +1,24 @@
+{% extends "components/base_internal_part.html" %}
+
+{% block content %}
+<table class="table m-3">
+    <thead>
+        <th scope="col">Imagen de perfil</th>
+        <th scope="col">Nombre de usuario</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Apellido</th>
+        <th scope="col">Ubicación</th>
+        <th scope="col">Comentario</th>
+        <th scope="col">Nota</th>
+    </thead>
+    <tbody>
+        {% for pedido in pedidos %}
+        <tr>
+            <td>{{pedido.fecha_creacion}}</td>
+            <td>{{pedido.total_pedido}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock%}

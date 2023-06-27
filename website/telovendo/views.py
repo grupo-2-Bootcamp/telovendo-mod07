@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
 from telovendo.form import FormularioLogin
+from telovendo.models import Pedidos
 
 # Create your views here.
 
@@ -41,3 +42,16 @@ class InternoView(TemplateView):
     def get(self, request, *args, **kwargs):
         title = "Bienvenido al sistema de compras"
         return render(request, self.template_name, {"title": title,})
+
+class PedidosView(TemplateView):
+    template_name = "pedidos.html"
+
+    def get(self, request, *args, **kwargs):
+        title = "Bienvenido a la vista de pedidos"
+        pedidos = Pedidos.objects.all()
+
+        context ={
+            'titulo':title,
+            'pedidos': pedidos
+        }
+        return render(request,self.template_name, context)

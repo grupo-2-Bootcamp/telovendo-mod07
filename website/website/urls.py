@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from mainsite.views import Index
 from django.contrib.auth.views import LogoutView
-from telovendo.views import LoginView, InternoView
+from telovendo.views import LoginView, InternoView, PedidosView
 
 
 
@@ -28,4 +28,5 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('internal/', InternoView.as_view(), name='internal'),
+    path('pedidos', PedidosView.as_view(), name = 'pedidos')
 ]
