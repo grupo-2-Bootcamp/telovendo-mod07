@@ -10,15 +10,16 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'run', 'idEmpresa', 'group')
-        fields = ('id', 'email', 'username', 'first_name', 'last_name')
+        fields = UserCreationForm.Meta.fields + ('run', 'group', 'idEmpresa', )
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         # fields = ('id', 'email', 'username', 'first_name', 'last_name', 'run', 'idEmpresa', 'group')
-        fields = ('id', 'email', 'username', 'first_name', 'last_name')
+        fields = UserChangeForm.Meta.fields
 
+# Otros formularios
 
+# Formulario de login
 class FormularioLogin(forms.Form):
     username = forms.CharField(label='Usuario', required=True,
                                 max_length=30, min_length=5,
@@ -124,5 +125,5 @@ class FormularioRegistro(UserCreationForm):
     group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
 
     class Meta(UserCreationForm.Meta):
-        model = User
+        model = CustomUser
         fields = ('username', 'first_name', 'last_name','email', 'password1', 'password2', 'group')

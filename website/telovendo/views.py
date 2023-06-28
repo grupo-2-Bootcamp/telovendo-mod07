@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
+
 from telovendo.form import FormularioLogin, FormularioRegistro
-from telovendo.models import Pedidos
+from telovendo.models import Pedidos, CustomUser
+
+from django.contrib.auth.models import Group
+from django.views import View
 
 # Create your views here.
 
@@ -58,6 +62,7 @@ class PedidosView(TemplateView):
 
 class RegistroView(TemplateView):
     template_name = 'registro.html'
+
     
     def get(self, request, *args, **kwargs):
         form = FormularioRegistro()
@@ -90,3 +95,42 @@ class RegistroView(TemplateView):
             "titulo": titulo
         }
         return render(request, self.template_name, context)
+
+# class RegistroView(View):
+#     template_name = 'registro.html'
+
+#     class Meta:
+#         model = CustomUser
+#         fields = ('username', 'password1', 'password2',)
+
+#     def get(self, request, *args, **kwargs):
+#         form = FormularioRegistro()
+#         titulo = "Registro de Usuario"
+#         context = {
+#             "formulario": form,
+#             "titulo": titulo
+#         }
+#         return render(request, self.template_name, context)
+
+#     def post(self, request, *args, **kwargs):
+#         form = FormularioRegistro(request.POST, request.FILES)
+#         titulo = "Registro de Usuarios"
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             group = form.cleaned_data['group']
+#             if group:
+#                 group.user_set.add(user)
+#             username = form.cleaned_data['username']
+#             password = form.cleaned_data['password1']
+#             user.set_password(password)
+#             user.save()
+#             mensajes = {"enviado": True, "resultado": "Has creado un nuevo usuario exitosamente"}
+#         else:
+#             mensajes = {"enviado": False, "resultado": form.errors}
+#         context = {
+#             "formulario": form,
+#             "mensajes": mensajes,
+#             "titulo": titulo
+#         }
+#         return render(request, self.template_name, context)
+    
