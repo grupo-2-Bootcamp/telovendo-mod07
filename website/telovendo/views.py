@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
-from telovendo.form import FormularioLogin
+from telovendo.form import FormularioLogin, FormularioRegistro
 from telovendo.models import Pedidos
 
 # Create your views here.
@@ -55,3 +55,38 @@ class PedidosView(TemplateView):
             'pedidos': pedidos
         }
         return render(request,self.template_name, context)
+
+class RegistroView(TemplateView):
+    template_name = 'registro.html'
+    
+    def get(self, request, *args, **kwargs):
+        form = FormularioRegistro()
+        titulo = "Registro de Usuario"
+        context = {
+            "formulario": form, 
+            "titulo": titulo
+            }
+        
+        return render(request, self.template_name, context )
+
+    def post(self, request, *args, **kwargs):
+        form = FormularioRegistro(request.POST, request.FILES)
+        titulo = "Registro de Usuarios"
+        if form.is_valid():
+            user = form.save()
+            group = form.cleaned_data['group']
+            if group:
+                group.user_set.add(user)
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            user.save()
+            mensajes = {"enviado": True, "resultado": "Has creado un nuevo usuario exitosamente"}
+        else:
+            mensajes = {"enviado": False, "resultado": form.errors}
+        context = {
+            "formulario": form,
+            "mensajes": mensajes,
+            "titulo": titulo
+        }
+        return render(request, self.template_name, context)

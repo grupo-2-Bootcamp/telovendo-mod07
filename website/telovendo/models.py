@@ -52,6 +52,8 @@ class Empresas(models.Model):
         verbose_name = 'Empresa'
         verbose_name_plural = 'Empresas'
 
+
+# Clase para usuarios personalizados
 class CustomUser(AbstractUser):
     run = models.CharField(max_length=12, null=False, blank=False)
     idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=True)
