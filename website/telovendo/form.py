@@ -33,7 +33,7 @@ class FormularioLogin(forms.Form):
                                 })
                                 )
         password = forms.CharField(label='Contraseña', required=True,
-                                max_length=30, min_length=8,
+                                max_length=30, min_length=6,
                                 error_messages={
                                     'required': 'La contraseña es obligatoria',
                                     'max_length': 'La contraseña no puede superar los 30 caracteres',

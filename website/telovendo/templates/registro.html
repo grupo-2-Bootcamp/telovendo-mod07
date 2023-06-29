@@ -25,7 +25,7 @@
         {% for campo in formulario %}
         <div class="row mb-3">
             <strong class="col-lg-4 col-form-label"><label for="{{ campo.id_for_label }}">{{ campo.label }}</label></strong>
-            <div class="col-lg-8">
+            <div class="col-lg-9">
                 {{ campo }} 
                 {% if campo.help_text %}
                     <div class="form-text">{{ campo.help_text }}</div>

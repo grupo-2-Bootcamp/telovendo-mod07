@@ -75,36 +75,37 @@ class RegistroView(TemplateView):
         form = FormularioRegistro(request.POST, request.FILES)
         titulo = "Registro de Usuarios"
         if form.is_valid():
-            user = form.save()
-            group = form.cleaned_data['group']
-            if group:
-                group.user_set.add(user)
             username = form.cleaned_data['username']
             password = generate_random_password()
-            user = authenticate(username=username, password=password)
+            user = form.save(commit = False)
+            # group = form.cleaned_data['group']
+            # if group:
+            #     group.user_set.add(user)
+            user.set_password(password)
             user.save()
             mensajes = {"enviado": True, "resultado": "Has creado un nuevo usuario exitosamente"}
         else:
             mensajes = {"enviado": False, "resultado": form.errors}
+        correo_destino = form.cleaned_data['email']
         context = {
             "formulario": form,
             "mensajes": mensajes,
             "titulo": titulo
         }
 
-        mensaje = """
+        mensaje = f"""
                 Bienvenido a Telovendo.
-                Para registrarse se la ha asignado una contraseña de prueba.
-                contraseña : """ + password + """.
+                Gracias por registrarte en nuestro sitio web. A continuación se le adjunta su contraseña de acceso
+                contraseña :   {password} 
                 Muchas Gracias por su preferencia
                     """
-
         send_mail(
             '[TE LO VENDO] - Contraseña',
             mensaje,
-            os.environ.get('EMAIL_HOST_USER'),
-            ['basstiiaan@gmail.com'], fail_silently=False
-            )
+            os.environ.get('EMAIL_HOST_USER'),  # Usar el correo configurado en settings.py
+            [correo_destino],  # Enviar el correo al destinatario ingresado por el usuario
+            fail_silently=False
+        )
 
         return render(request, self.template_name, context)
 
