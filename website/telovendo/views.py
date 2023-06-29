@@ -9,13 +9,15 @@ from telovendo.models import Pedidos, CustomUser
 
 from django.core.mail import send_mail
 
-# Create your views here.
+# Genera contraseñas aleatorias
 def generate_random_password():
     characters = string.ascii_letters + string.digits
     password = ''.join(random.choice(characters) for _ in range(6))
     return password
 
-class LoginView(TemplateView):
+# Create your views here.
+
+class LoginView(TemplateView):              # Vista de acceso al sistema interno
     template_name = "login.html"
 
     def get(self, request, *args, **kwargs):
@@ -37,14 +39,15 @@ class LoginView(TemplateView):
                     return redirect('internal')
             form.add_error("email", "Se han ingresado las credenciales equivocadas.")
         return render(request, self.template_name, {"form": form, "title": title})
-        
-class InternoView(TemplateView):
+
+class InternoView(TemplateView):            # Vista de pagina principal interna
     template_name = "internal.html"
     def get(self, request, *args, **kwargs):
         title = "Bienvenido al sistema de compras"
         return render(request, self.template_name, {"title": title,})
 
-class PedidosView(TemplateView):
+
+class PedidosView(TemplateView):            # Vista de pedidos
     template_name = "pedidos.html"
 
     def get(self, request, *args, **kwargs):
@@ -57,7 +60,8 @@ class PedidosView(TemplateView):
         }
         return render(request,self.template_name, context)
 
-class RegistroView(TemplateView):
+
+class RegistroView(TemplateView):           # Vista de registro de usuarios 
     template_name = 'registro.html'
 
     
