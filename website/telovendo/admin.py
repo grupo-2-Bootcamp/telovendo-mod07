@@ -21,11 +21,10 @@ class CustomUserAdmin(UserAdmin):
         'last_name',
         'run',
         'idEmpresa',
-        'group',
         'is_staff',
         ]
-    fieldsets = UserAdmin.fieldsets + ((None, {"fields": ("run", "idEmpresa")}),)
-    add_fieldsets = UserAdmin.add_fieldsets + ((None, {"fields": ("run",)}),)
+    fieldsets = UserAdmin.fieldsets + ((None, {'fields': ('run', 'idEmpresa')}),)         # Edición de usuarios en la administración
+    add_fieldsets = UserAdmin.add_fieldsets + ((None, {'fields': ('run','idEmpresa')}),)  # Creación de usuarios en la administración
 
 admin.site.register(CustomUser, CustomUserAdmin)
 
