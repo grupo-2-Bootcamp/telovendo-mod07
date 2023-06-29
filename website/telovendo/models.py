@@ -76,7 +76,7 @@ class Direcciones(models.Model):
     direccion = models.CharField(max_length=45, null=False, blank=False)
     numero = models.IntegerField(null=False, blank=False)
     Comuna = models.CharField(max_length=45, null=False, blank=False)
-    descripcion = models.CharField(max_length=45, null=True)
+    descripcion = models.CharField(max_length=45, null=True, blank=True)
 
     def __str__(self):
         return self.direccion
@@ -91,8 +91,8 @@ class Pedidos(models.Model):
     idMetodoPago = models.ForeignKey(MetodoPago, on_delete=models.DO_NOTHING, null=False, blank=False)
     idEstado = models.ForeignKey(Estado_Pedido, on_delete=models.DO_NOTHING, null=False, blank=False)
     idDireccion = models.ForeignKey(Direcciones, on_delete=models.DO_NOTHING, null=False, blank=False)
-    idUsuario = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True)
-    idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=True)
+    idUsuario = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True, blank=True)
+    idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=True, blank=True)
     total_pedido = models.IntegerField(null=False, blank=False)
 
     class Meta:
