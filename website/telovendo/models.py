@@ -57,7 +57,7 @@ class Empresas(models.Model):
 # Clase para usuarios personalizados
 class CustomUser(AbstractUser):
     run = models.CharField(max_length=12, null=False, blank=False)
-    idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=True)
+    idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=True, blank = True)
     group = models.CharField(max_length=45, null=True)
 
     def __str__(self):
