@@ -7,7 +7,6 @@ from django.contrib.auth.models import User, Group
 # Formulario de creación de usuarios solo para el panel de administración de Django
 
 class CustomUserCreationForm(UserCreationForm):
-
     class Meta:
         model = CustomUser
         fields = UserCreationForm.Meta.fields + ('run', 'group', 'idEmpresa', )
@@ -26,11 +25,11 @@ class FormularioLogin(forms.Form):
                                             'required': 'Tiene que indicar el email del usuario',
                                             'max_length': 'La dirección de email tiene más de 30 caracteres',
                                         },
-                                    widget=forms.TextInput(attrs={
-                                        'placeholder': 'Ingrese su correo electrónico',
-                                        'class': 'form-control',
-                                        'type': 'email'
-                                    })
+                                        widget=forms.TextInput(attrs={
+                                            'placeholder': 'Ingrese su correo electrónico',
+                                            'class': 'form-control',
+                                            'type': 'email'
+                                        })
                                     )
     password = forms.CharField      (label='Contraseña', required=True,
                                         max_length=30, min_length=6,
@@ -39,10 +38,10 @@ class FormularioLogin(forms.Form):
                                             'max_length': 'La contraseña no puede superar los 30 caracteres',
                                             'min_length': 'La contraseña debe tener al menos 8 caracteres'
                                         },
-                                    widget=forms.PasswordInput(attrs={
-                                        'placeholder': 'Ingrese su contraseña',
-                                        'class': 'form-control'
-                                    })
+                                        widget=forms.PasswordInput(attrs={
+                                            'placeholder': 'Ingrese su contraseña',
+                                            'class': 'form-control'
+                                        })
                                     )
 
 class FormularioRegistro(forms.ModelForm):
@@ -78,17 +77,17 @@ class FormularioRegistro(forms.ModelForm):
                                         widget= forms.TextInput(attrs={
                                             'placeholder': 'Ingrese el apellido del usuario',
                                             'class':'form-control'}),
-                                        )
+                                    )
     email = forms.EmailField        (label="Dirección de email", required = True, 
                                         max_length=30,
                                         error_messages={
                                             'required': 'Tiene que indicar el email del usuario',
                                             'max_length': 'La dirección de email tiene más de 30 caracteres',
                                         },
-                                    widget= forms.TextInput(attrs={
-                                            'placeholder':'Ingrese su correo electrónico',
-                                            'class':'form-control',
-                                            'type':'email'})
+                                        widget= forms.TextInput(attrs={
+                                                'placeholder':'Ingrese su correo electrónico',
+                                                'class':'form-control',
+                                                'type':'email'})
                                     )
     run = forms.CharField           (label="RUN", required = True,
                                     max_length=12,
@@ -100,6 +99,13 @@ class FormularioRegistro(forms.ModelForm):
                                             'placeholder': 'Ingrese su run',
                                             'class':'form-control'}),
                                     )                  
+    
+    empresas = forms.ModelChoiceField(queryset=Empresas.objects.all(), required=False)
+    
+    class Meta(UserCreationForm.Meta):
+        model = CustomUser
+        fields = ('username', 'first_name', 'last_name','email')
+
     # password1 = forms.CharField(label='Contraseña', required=True,
     #                             max_length=30, min_length=1,
     #                             error_messages={
@@ -122,10 +128,6 @@ class FormularioRegistro(forms.ModelForm):
     #                                 'class': 'form-control'
     #                             })
     #                             )
-    empresas = forms.ModelChoiceField(queryset=Empresas.objects.all(), required=False)
+    
     
     # group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
-
-    class Meta(UserCreationForm.Meta):
-        model = CustomUser
-        fields = ('username', 'first_name', 'last_name','email')
