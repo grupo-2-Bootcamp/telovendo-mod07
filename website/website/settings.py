@@ -146,3 +146,18 @@ LOGOUT_URL = 'logout'
 
 AUTH_USER_MODEL = 'telovendo.CustomUser'
 
+# CONFIGURACIÓN DE CORREO
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = os.environ.get('EMAIL_HOST')
+# EMAIL_PORT = os.environ.get('EMAIL_PORT')
+# EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+# EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL')
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+EMAIL_HOST = 'mail.fabricadecodigo.dev'
+EMAIL_PORT = 2525
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'talento@fabricadecodigo.dev'
+EMAIL_HOST_PASSWORD = 'talento.,2023'

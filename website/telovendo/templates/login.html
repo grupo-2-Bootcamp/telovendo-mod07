@@ -7,7 +7,7 @@
         {% if form.errors %}
         <div class="alert alert-danger mt-3" role="alert">
             <h4><i class="fa-solid fa-triangle-exclamation"></i> Error</h4>
-            {{ form.errors.username }}
+            {{ form.errors }}
         </div>
         {% endif %}
 
@@ -18,8 +18,8 @@
                 <h5 class="card-title">Login</h5>
                 <h6 class="card-subtitle mb-2 text-body-secondary">Ingresa tus credenciales</h6>
                 <div class="form-group">
-                    <label for="id_username">Usuario</label>
-                    <input type="text" class="form-control" id="id_username" name="username" placeholder="Ingrese su nombre de usuario" required>
+                    <label for="id_email">Correo</label>
+                    <input type="email" class="form-control" id="id_email" name="email" placeholder="Ingrese su correo" required>
                 </div>
                 <div class="form-group">
                     <label for="id_password">Contraseña</label>

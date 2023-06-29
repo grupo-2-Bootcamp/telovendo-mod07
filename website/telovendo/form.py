@@ -21,19 +21,18 @@ class CustomUserChangeForm(UserChangeForm):
 
 # Formulario de login
 class FormularioLogin(forms.Form):
-    username = forms.CharField(label='Usuario', required=True,
-                                max_length=30, min_length=5,
+        email = forms.EmailField(label="Email", required=True, max_length=30,
                                 error_messages={
-                                    'required': 'El usuario es obligatorio',
-                                    'max_length': 'El nombre de usuario no puede ser superior a los 30 caracteres',
-                                    'min_length': 'El nombre de usuario debe tener al menos 5 caracteres'
+                                    'required': 'Tiene que indicar el email del usuario',
+                                    'max_length': 'La dirección de email tiene más de 30 caracteres',
                                 },
                                 widget=forms.TextInput(attrs={
-                                    'placeholder': 'Ingrese su nombre de usuario',
-                                    'class': 'form-control'
+                                    'placeholder': 'Ingrese su correo electrónico',
+                                    'class': 'form-control',
+                                    'type': 'email'
                                 })
                                 )
-    password = forms.CharField(label='Contraseña', required=True,
+        password = forms.CharField(label='Contraseña', required=True,
                                 max_length=30, min_length=8,
                                 error_messages={
                                     'required': 'La contraseña es obligatoria',
@@ -46,8 +45,7 @@ class FormularioLogin(forms.Form):
                                 })
                                 )
 
-
-class FormularioRegistro(UserCreationForm):
+class FormularioRegistro(forms.ModelForm):
     username = forms.CharField(label='NombreUsuario', required=True,
                                 max_length=30, min_length=5,
                                 error_messages={
@@ -98,32 +96,32 @@ class FormularioRegistro(UserCreationForm):
                                             'placeholder': 'Ingrese su run',
                                             'class':'form-control'}),
                                         )                  
-    password1 = forms.CharField(label='Contraseña', required=True,
-                                max_length=30, min_length=1,
-                                error_messages={
-                                    'required': 'La contraseña es obligatoria',
-                                    'max_length': 'La contraseña no puede superar los 30 caracteres'
-                                    },
-                                widget=forms.PasswordInput(attrs={
-                                    'placeholder': 'Ingrese su contraseña',
-                                    'class': 'form-control'
-                                })
-                                )
-    password2 = forms.CharField(label='Contraseña', required=True,
-                                max_length=30, min_length=1,
-                                error_messages={
-                                    'required': 'La contraseña es obligatoria',
-                                    'max_length': 'La contraseña no puede superar los 30 caracteres'
-                                    },
-                                widget=forms.PasswordInput(attrs={
-                                    'placeholder': 'Ingrese su contraseña',
-                                    'class': 'form-control'
-                                })
-                                )
+    # password1 = forms.CharField(label='Contraseña', required=True,
+    #                             max_length=30, min_length=1,
+    #                             error_messages={
+    #                                 'required': 'La contraseña es obligatoria',
+    #                                 'max_length': 'La contraseña no puede superar los 30 caracteres'
+    #                                 },
+    #                             widget=forms.PasswordInput(attrs={
+    #                                 'placeholder': 'Ingrese su contraseña',
+    #                                 'class': 'form-control'
+    #                             })
+    #                             )
+    # password2 = forms.CharField(label='Contraseña', required=True,
+    #                             max_length=30, min_length=1,
+    #                             error_messages={
+    #                                 'required': 'La contraseña es obligatoria',
+    #                                 'max_length': 'La contraseña no puede superar los 30 caracteres'
+    #                                 },
+    #                             widget=forms.PasswordInput(attrs={
+    #                                 'placeholder': 'Ingrese su contraseña',
+    #                                 'class': 'form-control'
+    #                             })
+    #                             )
     empresas = forms.ModelChoiceField(queryset=Empresas.objects.all(), required=False)
     
-    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
+    # group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
 
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('username', 'first_name', 'last_name','email', 'password1', 'password2', 'group')
+        fields = ('username', 'first_name', 'last_name','email')
