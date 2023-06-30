@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
 from telovendo.form import FormularioLogin, FormularioRegistro
-from telovendo.models import Pedidos, CustomUser
+from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Productos
 
 from django.core.mail import send_mail
 
@@ -45,7 +45,7 @@ class InternoView(TemplateView):            # Vista de pagina principal interna
     def get(self, request, *args, **kwargs):
         title = "Bienvenido al sistema interno de TeLoVendo"
         return render(request, self.template_name, {"title": title,})
-
+    
 
 class PedidosView(TemplateView):            # Vista de pedidos
     template_name = "pedidos.html"
@@ -60,6 +60,27 @@ class PedidosView(TemplateView):            # Vista de pedidos
         }
         return render(request,self.template_name, context)
 
+class DetallesPedidosView(TemplateView):            # Vista de pagina detalles pedidos
+    template_name = "detalles_pedidos.html"
+    def get(self, request, idpedido, *args, **kwargs):
+        title = "Bienvenido a la vista de los detalles de pedidos"
+        pedidos = Pedidos.objects.get(id=idpedido)
+        empresas = Empresas.objects.get(id=pedidos.idEmpresa_id)
+        direcciones = Direcciones.objects.get(id=pedidos.idDireccion_id)
+        detalles_pedidos = Detalles_Pedido.objects.filter(idPedidos=idpedido)
+        productos = []
+        for detalle in detalles_pedidos:
+            productos.append(Productos.objects.get(id=detalle.idProductos_id))
+        context ={
+            'title':title,
+            'pedidos': pedidos,
+            'empresas': empresas,
+            'direcciones': direcciones,
+            'detalles_pedidos': detalles_pedidos,
+            'productos': productos
+            }
+        return render(request, self.template_name, context)
+    
 
 class RegistroView(TemplateView):           # Vista de registro de usuarios 
     template_name = 'registro.html'

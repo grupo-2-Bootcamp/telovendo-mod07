@@ -1,0 +1,21 @@
+{% extends "components/base_internal_part.html" %}
+
+{% block content %}
+
+
+{{pedidos.idEstado}}
+{{direcciones.Comuna}}
+{{empresas.rut}}
+
+<strong>{% for detalle in detalles_pedidos %}
+{{detalle.idProductos_id}}
+{% endfor %}</strong>
+
+
+{% for producto in productos %}
+{{producto.stock}}
+{% endfor %}
+
+
+
+{% endblock%}
