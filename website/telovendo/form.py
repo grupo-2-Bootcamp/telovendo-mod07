@@ -60,22 +60,21 @@ class FormularioRegistro(forms.ModelForm):
     first_name = forms.CharField    (label="Primer nombre", required = True,
                                         max_length=30,
                                         error_messages={
-                                            'required': 'El nombre del usuario es Obligatorio',
-                                            'max_length': 'El nombre debe tener como maximo 30 caracteres',
+                                            'required': 'El primer nombre es obligatorio',
+                                            'max_length': 'El primer nombre debe tener como maximo 30 caracteres',
                                         },
                                         widget= forms.TextInput(attrs={
-                                            'placeholder': 'Ingrese el nombre del usuario',
+                                            'placeholder': 'Ingrese su primer nombre',
                                             'class':'form-control'}),
                                     )
-
     last_name = forms.CharField     (label="Primer apellido", required = True,
                                         max_length=30,
                                         error_messages={
-                                            'required': 'El apellido del usuario es obligatorio',
-                                            'max_length': 'El apellido debe tener como maximo 30 caracteres',
+                                            'required': 'El primer apellido del usuario es obligatorio',
+                                            'max_length': 'El primer apellido debe tener como maximo 30 caracteres',
                                         },
                                         widget= forms.TextInput(attrs={
-                                            'placeholder': 'Ingrese el apellido del usuario',
+                                            'placeholder': 'Ingrese su primer apellido',
                                             'class':'form-control'}),
                                     )
     email = forms.EmailField        (label="Dirección de email", required = True, 
@@ -92,19 +91,22 @@ class FormularioRegistro(forms.ModelForm):
     run = forms.CharField           (label="RUN", required = True,
                                     max_length=12,
                                         error_messages={
-                                            'required': 'El run del usuario es obligatorio',
-                                            'max_length': 'El run no debe sobrepasar los 12 carácteres',
+                                            'required': 'El RUN del usuario es obligatorio',
+                                            'max_length': 'El RUN no debe sobrepasar los 12 carácteres',
                                         },
                                         widget= forms.TextInput(attrs={
-                                            'placeholder': 'Ingrese su run',
+                                            'placeholder': 'Ingrese su RUN',
                                             'class':'form-control'}),
-                                    )                  
-    
-    empresas = forms.ModelChoiceField(queryset=Empresas.objects.all(), required=False)
+                                    )
+    idEmpresa = forms.ModelChoiceField(label="Empresa", empty_label=("Seleccione una empresa"),
+                                        queryset=Empresas.objects.all(), required=False, 
+                                        widget= forms.Select(attrs={
+                                            'class':'form-select'}),)
+    # group = forms.ModelChoiceField  (queryset=Group.objects.all(), required=False, initial=Group.objects.first())
     
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('username', 'first_name', 'last_name','email')
+        fields = ('username', 'first_name', 'last_name','email', 'run', 'idEmpresa')
 
     # password1 = forms.CharField(label='Contraseña', required=True,
     #                             max_length=30, min_length=1,
@@ -130,4 +132,4 @@ class FormularioRegistro(forms.ModelForm):
     #                             )
     
     
-    # group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
+    # 

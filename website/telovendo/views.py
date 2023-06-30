@@ -43,7 +43,7 @@ class LoginView(TemplateView):              # Vista de acceso al sistema interno
 class InternoView(TemplateView):            # Vista de pagina principal interna
     template_name = "internal.html"
     def get(self, request, *args, **kwargs):
-        title = "Bienvenido al sistema de compras"
+        title = "Bienvenido al sistema interno de TeLoVendo"
         return render(request, self.template_name, {"title": title,})
 
 
@@ -51,11 +51,11 @@ class PedidosView(TemplateView):            # Vista de pedidos
     template_name = "pedidos.html"
 
     def get(self, request, *args, **kwargs):
-        title = "Bienvenido a la vista de pedidos"
+        title = "Gestión de pedidos"
         pedidos = Pedidos.objects.all()
 
         context ={
-            'titulo':title,
+            'title':title,
             'pedidos': pedidos
         }
         return render(request,self.template_name, context)
@@ -67,17 +67,17 @@ class RegistroView(TemplateView):           # Vista de registro de usuarios
     
     def get(self, request, *args, **kwargs):
         form = FormularioRegistro()
-        titulo = "Registro de Usuario"
+        title = "Registro de Usuario"
         context = {
             "formulario": form, 
-            "titulo": titulo
+            "title": title
             }
         
         return render(request, self.template_name, context )
 
     def post(self, request, *args, **kwargs):
         form = FormularioRegistro(request.POST, request.FILES)
-        titulo = "Registro de Usuarios"
+        title = "Registro de Usuarios"
         if form.is_valid():
             username = form.cleaned_data['username']
             password = generate_random_password()
@@ -94,7 +94,7 @@ class RegistroView(TemplateView):           # Vista de registro de usuarios
         context = {
             "formulario": form,
             "mensajes": mensajes,
-            "titulo": titulo
+            "title": title
         }
 
         mensaje = f"""
