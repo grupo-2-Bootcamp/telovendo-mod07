@@ -3,57 +3,66 @@
 {% block content %}
 <h1>Pedidos en el sistema</h1>
 <div class="content mt-5">
-{% for pedido in pedidos %}
-    <div class="row">
-        <div class="col-1 mb-4 fw-bold"><h4><i class="fa-solid fa-receipt"></i> Pedido</h4></div>
-        <div class="col-1 mb-4"><h4>{{ pedido.id }}</h4></div>
-        <div class="col-2"><button type="button" class="btn btn-primary btn-lg">Ver detalle</button></div>
-    </div>
-    <div class="row">
-        <div class="col-1 mb-2 fw-bold"><h4><i class="fa-regular fa-building"></i> Empresa</h4></div>
-        <div class="col-2 mb-2"><h4>{{ pedido.idEmpresa }}</h4></div>
-        <div class="col-1 mb-2 fw-bold"><h4><i class="fa-solid fa-bullseye"></i> Estado</h4></div>
-        {% if pedido.idEstado_id   == 1 %} <!-- 1: En preparación -->
-            <div class="col-1 mb-2 "><h4 class="btn btn-primary">{{ pedido.idEstado }}</h4></div>
-        {% elif pedido.idEstado_id == 2 %} <!-- 2: Pendiente -->
-            <div class="col-1 mb-2 "><h4 class="btn btn-warning">{{ pedido.idEstado }}</h4></div>
-        {% elif pedido.idEstado_id == 3 %} <!-- 3: En despacho -->
-            <div class="col-1 mb-2 "><h4 class="btn btn-info">{{ pedido.idEstado }}</h4></div>
-        {% elif pedido.idEstado_id == 4 %} <!-- 4: Entregado -->
-            <div class="col-1 mb-2 "><h4 class="btn btn-success">{{ pedido.idEstado }}</h4></div>
-        {% elif pedido.idEstado_id == 5 %} <!-- 5: Cancelado -->
-            <div class="col-1 mb-2 "><h4 class="btn btn-secondary">{{ pedido.idEstado }}</h4></div>
-        {% endif %}
 
-    </div>
-    <div class="row">
-        <div class="col-2 mb-2 fw-bold"><i class="fa-solid fa-user"></i> Creado por</div>
-        <div class="col-2 mb-2 fw-bold"><i class="fa-regular fa-calendar-days"></i> Fecha de creación</div>
-        <div class="col-2 mb-2 fw-bold"><i class="fa-solid fa-hand-holding-dollar"></i> Medio de pago</div>
-        <div class="col-2 mb-2 fw-bold"><i class="fa-solid fa-dollar-sign"></i> Total</div>
-    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"><i class="fa-solid fa-receipt"></i> N°</th>
+                <th scope="col"><i class="fa-regular fa-building"></i> Empresa</th>
+                <th scope="col"><i class="fa-solid fa-bullseye"></i>  Estado</th>
+                <th scope="col"><i class="fa-solid fa-user"></i> Creado por</th>
+                <th scope="col"><i class="fa-regular fa-calendar-days"></i> Fecha de creación</th>
+                <th scope="col"><i class="fa-solid fa-hand-holding-dollar"></i> Medio de pago</th>
+                <th scope="col"><i class="fa-solid fa-dollar-sign"></i>Total</th>
+                <th scope="col">Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pedido in pedidos %}
+            <tr>
+                <th scope="row">{{ pedido.id }}</th>
+                <td>{{ pedido.idEmpresa }}</td>
+                <td>
+                    {% if pedido.idEstado_id   == 1 %} <!-- 1: En preparación -->
+                        <p class="btn btn-primary">{{ pedido.idEstado }}</p>
+                    {% elif pedido.idEstado_id == 2 %} <!-- 2: Pendiente -->
+                        <p class="btn btn-warning">{{ pedido.idEstado }}</p>
+                    {% elif pedido.idEstado_id == 3 %} <!-- 3: En despacho -->
+                        <p class="btn btn-info">{{ pedido.idEstado }}</p>
+                    {% elif pedido.idEstado_id == 4 %} <!-- 4: Entregado -->
+                        <p class="btn btn-success">{{ pedido.idEstado }}</p>
+                    {% elif pedido.idEstado_id == 5 %} <!-- 5: Cancelado -->
+                        <p class="btn btn-secondary">{{ pedido.idEstado }}</p>
+                    {% endif %}
+                </td>
+                <td>{{ pedido.idUsuario }}</td>
+                <td>{{ pedido.fecha_creacion }}</td>
+                <td>
+                    {% if pedido.idMetodoPago_id   == 1 %} <!-- 1: Efectivo -->
+                        <p class="btn btn-success"><i class="fa-solid fa-money-bill"></i> {{ pedido.idMetodoPago }}</p>
+                    {% elif pedido.idMetodoPago_id == 2 %} <!-- 2: Crédito TeLoVendo -->
+                        <p class="btn btn-success"><i class="fa-solid fa-money-check-dollar"></i> {{ pedido.idMetodoPago }}</p>
+                    {% elif pedido.idMetodoPago_id == 3 %} <!-- 3: Transferencia electrónica -->
+                        <p class="btn btn-success"><i class="fa-solid fa-landmark"></i> {{ pedido.idMetodoPago }}</p>
+                    {% elif pedido.idMetodoPago_id == 4 %} <!-- 4: Débito -->
+                        <p class="btn btn-success"><i class="fa-solid fa-credit-card"></i> {{ pedido.idMetodoPago }}</p>
+                    {% elif pedido.idMetodoPago_id == 5 %} <!-- 5: Crédito -->
+                        <p class="btn btn-success"><i class="fa-solid fa-credit-card"></i> {{ pedido.idMetodoPago }}</p>
+                    {% elif pedido.idMetodoPago_id == 6 %} <!-- 6: Prepago -->
+                        <p class="btn btn-success"><i class="fa-solid fa-credit-card"></i> {{ pedido.idMetodoPago }}</p>
+                    {% elif pedido.idMetodoPago_id == 7 %} <!-- 5: Webpay -->
+                        <p class="btn btn-success"><i class="fa-solid fa-globe"></i> {{ pedido.idMetodoPago }}</p>
+                    {% endif %}
+                </td>
+                <td>$ {{ pedido.total_pedido }}</td>
+                <td><button type="button" class="btn btn-primary">Ver detalle</button></td>
+            </tr>
+        {% endfor %}
+        </tbody>
 
-    <div class="row">
-        <div class="col-2">{{ pedido.idUsuario }}</div>
-        <div class="col-2 mb-2 ">{{ pedido.fecha_creacion }}</div>
-        {% if pedido.idMetodoPago_id   == 1 %} <!-- 1: Efectivo -->
-            <div class="col-2 mb-2 "><p class="btn btn-success"><i class="fa-solid fa-money-bill"></i> {{ pedido.idMetodoPago }}</p></div>
-        {% elif pedido.idMetodoPago_id == 2 %} <!-- 2: Crédito TeLoVendo -->
-            <div class="col-2 mb-2 "><p class="btn btn-success"><i class="fa-solid fa-money-check-dollar"></i> {{ pedido.idMetodoPago }}</p></div>
-        {% elif pedido.idMetodoPago_id == 3 %} <!-- 3: Transferencia electrónica -->
-            <div class="col-2 mb-2 "><p class="btn btn-success"><i class="fa-solid fa-landmark"></i> {{ pedido.idMetodoPago }}</p></div>
-        {% elif pedido.idMetodoPago_id == 4 %} <!-- 4: Débito -->
-            <div class="col-2 mb-2 "><p class="btn btn-success"><i class="fa-solid fa-credit-card"></i> {{ pedido.idMetodoPago }}</p></div>
-        {% elif pedido.idMetodoPago_id == 5 %} <!-- 5: Crédito -->
-            <div class="col-2 mb-2 "><p class="btn btn-success"><i class="fa-solid fa-credit-card"></i> {{ pedido.idMetodoPago }}</p></div>
-        {% elif pedido.idMetodoPago_id == 6 %} <!-- 6: Prepago -->
-            <div class="col-2 mb-2 "><p class="btn btn-success"><i class="fa-solid fa-credit-card"></i> {{ pedido.idMetodoPago }}</p></div>
-        {% elif pedido.idMetodoPago_id == 7 %} <!-- 5: Webpay -->
-            <div class="col-2 mb-2 "><p class="btn btn-success"><i class="fa-solid fa-globe"></i> {{ pedido.idMetodoPago }}</p></div>
-        {% endif %}
-        <div class="col-2 mb-2 ">$ {{ pedido.total_pedido }}</div>
-    </div>
-</div>
-{% endfor %}
+
+    </table>
+</div>  
+
 
 {% endblock%}
