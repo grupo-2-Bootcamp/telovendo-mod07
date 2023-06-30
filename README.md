@@ -36,7 +36,7 @@ El programa está configurado para usar PostgreSQL como motor de base de datos
 
         (.venv) píp install -r requeriments.txt
 
-5.  Finalmente cree un archivo .env en el directorio raíz del sistema:
+5.  Cree un archivo .env en el directorio raíz del sistema y proporcione los datos para acceder a una base de datos de PostgreSQL:
 
         SECRET_KEY= 'Secret_key'     # secret_key de Django
         DB_ENGINE= 'django.db.backends.postgresql_psycopg2'
@@ -45,6 +45,9 @@ El programa está configurado para usar PostgreSQL como motor de base de datos
         DB_PASSWORD= 'password'      # Contraseña del usuario 
         DB_HOST= 'host'              # Dirección del servidor PostgreSQL 
         DB_PORT= '5432'              # Puerto del servidor PostgreSQL, habitualmente 5432
+
+6.  Finalmente para ejecutar el proyecto utilice el comando
+        (.venv) python manage.py runserver
 
 ## Estructura de directorios principales
 
