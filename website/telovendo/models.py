@@ -11,7 +11,7 @@ class Productos(models.Model):              # Modelo de productos
     descripcion = models.CharField(max_length=45, null=False, blank=False)
     stock = models.IntegerField(null=False, blank=False)
     precio = models.IntegerField(null=False, blank=False)
-    urlfoto = models.CharField(max_length=45, null=False, blank=True)
+    urlfoto = models.CharField(max_length=45, null=True, blank=True)
     
     def __str__(self):
         return self.nombre
