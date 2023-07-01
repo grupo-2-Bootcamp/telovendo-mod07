@@ -36,6 +36,6 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('internal/home', login_required(InternoView.as_view()), name='internal'),
     path('internal/pedidos', login_required(PedidosView.as_view()), name = 'pedidos'),
+    path("internal/pedidos/orden/<int:idpedido>", login_required(DetallesPedidosView.as_view()), name="detalle_pedido"),
     path("registrarse", RegistroView.as_view(), name="registrarse"),
-    path("detallespedidos/orden/<int:idpedido>", login_required(DetallesPedidosView.as_view()), name="detallespedidos")
 ]

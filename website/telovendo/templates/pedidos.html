@@ -54,7 +54,7 @@
                     {% endif %}
                 </td>
                 <td>$ {{ pedido.total_pedido }}</td>
-                <td><button type="button" class="btn btn-primary">Ver detalle</button></td>
+                <td><a href="/internal/pedidos/orden/{{ pedido.id }}" class="btn btn-primary">Ver detalle</a></td>
             </tr>
         {% endfor %}
         </tbody>
