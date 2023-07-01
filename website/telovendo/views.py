@@ -4,8 +4,8 @@ import string
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
-from telovendo.form import FormularioLogin, FormularioRegistro
-from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Productos
+from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado
+from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Estado_Pedido, Productos
 
 from django.core.mail import send_mail
 
@@ -18,42 +18,41 @@ def generate_random_password():
 # Create your views here.
 
 class LoginView(TemplateView):              # Vista de acceso al sistema interno
-    template_name = "login.html"
+    template_name = 'login.html'
 
     def get(self, request, *args, **kwargs):
         formulario = FormularioLogin()
-        title = "Acceso al sitio interno"
-        return render(request, self.template_name, {"formulario": formulario, "title": title})
+        title = 'Acceso al sitio interno'
+        return render(request, self.template_name, {'formulario': formulario, 'title': title})
 
     def post(self, request, *args, **kwargs):
-        title = "Acceso al sitio interno"
+        title = 'Acceso al sitio interno'
         form = FormularioLogin(request.POST)
         if form.is_valid():
-            email = form.cleaned_data["email"]
-            password = form.cleaned_data["password"]
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
             user = CustomUser.objects.filter(email=email).first()
             if user is not None:
                 if user.is_active:
                     authenticated_user = authenticate(request, username=user.username, password=password)
                     login(request, authenticated_user)
                     return redirect('internal')
-            form.add_error("email", "Se han ingresado las credenciales equivocadas.")
-        return render(request, self.template_name, {"form": form, "title": title})
+            form.add_error('email', 'Se han ingresado las credenciales equivocadas.')
+        return render(request, self.template_name, {'form': form, 'title': title})
 
 class InternoView(TemplateView):            # Vista de pagina principal interna
-    template_name = "internal.html"
+    template_name = 'internal.html'
     def get(self, request, *args, **kwargs):
-        title = "Bienvenido al sistema interno de TeLoVendo"
-        return render(request, self.template_name, {"title": title,})
+        title = 'Bienvenido al sistema interno de TeLoVendo'
+        return render(request, self.template_name, {'title': title,})
     
 
 class PedidosView(TemplateView):            # Vista de pedidos
-    template_name = "pedidos.html"
+    template_name = 'pedidos.html'
 
     def get(self, request, *args, **kwargs):
-        title = "Gestión de pedidos"
+        title = 'Gestión de pedidos'
         pedidos = Pedidos.objects.all()
-
         context ={
             'title':title,
             'pedidos': pedidos
@@ -61,7 +60,7 @@ class PedidosView(TemplateView):            # Vista de pedidos
         return render(request,self.template_name, context)
 
 class DetallesPedidosView(TemplateView):            # Vista de pagina detalles pedidos
-    template_name = "detalles_pedidos.html"
+    template_name = 'detalles_pedidos.html'
     def get(self, request, idpedido, *args, **kwargs):
         
         pedido = Pedidos.objects.get(id=idpedido)
@@ -82,7 +81,22 @@ class DetallesPedidosView(TemplateView):            # Vista de pagina detalles p
             # 'productos': productos
             }
         return render(request, self.template_name, context)
+
+class UpdateEstadoPedidoView(TemplateView):
+    template_name = 'modifica_estado.html'
     
+    def get(self, request, idpedido, *args, **kwargs):    
+        pedido = Pedidos.objects.get(id=idpedido)
+        estados = Estado_Pedido.objects.all()
+        form = FormularioUpdateEstado(request.POST)
+        context = {
+            'title': f'Modificar estado del pedido {pedido}',
+            'pedido': pedido,
+            'estados': estados,
+            'form': form,
+        }
+        return render(request, self.template_name, context)
+
 
 class RegistroView(TemplateView):           # Vista de registro de usuarios 
     template_name = 'registro.html'
@@ -90,17 +104,17 @@ class RegistroView(TemplateView):           # Vista de registro de usuarios
     
     def get(self, request, *args, **kwargs):
         form = FormularioRegistro()
-        title = "Registro de Usuario"
+        title = 'Registro de Usuario'
         context = {
-            "formulario": form, 
-            "title": title
+            'formulario': form, 
+            'title': title
             }
         
         return render(request, self.template_name, context )
 
     def post(self, request, *args, **kwargs):
         form = FormularioRegistro(request.POST, request.FILES)
-        title = "Registro de Usuarios"
+        title = 'Registro de Usuarios'
         if form.is_valid():
             username = form.cleaned_data['username']
             password = generate_random_password()
@@ -110,22 +124,22 @@ class RegistroView(TemplateView):           # Vista de registro de usuarios
             #     group.user_set.add(user)
             user.set_password(password)
             user.save()
-            mensajes = {"enviado": True, "resultado": "Has creado un nuevo usuario exitosamente"}
+            mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo usuario exitosamente'}
         else:
-            mensajes = {"enviado": False, "resultado": form.errors}
+            mensajes = {'enviado': False, 'resultado': form.errors}
         correo_destino = form.cleaned_data['email']
         context = {
-            "formulario": form,
-            "mensajes": mensajes,
-            "title": title
+            'formulario': form,
+            'mensajes': mensajes,
+            'title': title
         }
 
-        mensaje = f"""
+        mensaje = f'''
                 Bienvenido a Telovendo.
                 Gracias por registrarte en nuestro sitio web. A continuación se le adjunta su contraseña de acceso
                 contraseña :   {password} 
                 Muchas Gracias por su preferencia
-                    """
+                    '''
         send_mail(
             '[TE LO VENDO] - Contraseña',
             mensaje,

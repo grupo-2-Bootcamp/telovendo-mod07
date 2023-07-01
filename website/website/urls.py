@@ -1,4 +1,4 @@
-"""
+'''
 URL configuration for website project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -13,7 +13,7 @@ Class-based views
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+'''
 # Funciones de Django
 from django.contrib import admin
 from django.urls import path
@@ -24,9 +24,7 @@ from django.contrib.auth.decorators import login_required
 from mainsite.views import Index
 
 # Vistas de la app principal
-from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, DetallesPedidosView
-
-
+from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, DetallesPedidosView, UpdateEstadoPedidoView
 
 
 urlpatterns = [
@@ -36,6 +34,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('internal/home', login_required(InternoView.as_view()), name='internal'),
     path('internal/pedidos', login_required(PedidosView.as_view()), name = 'pedidos'),
-    path("internal/pedidos/orden/<int:idpedido>", login_required(DetallesPedidosView.as_view()), name="detalle_pedido"),
-    path("registrarse", RegistroView.as_view(), name="registrarse"),
+    path('internal/pedidos/orden/<int:idpedido>', login_required(DetallesPedidosView.as_view()), name='detalle_pedido'),
+    path('internal/pedidos/orden/<int:idpedido>/modifica/estado', login_required(UpdateEstadoPedidoView.as_view()), name='modifica_estado_pedido'),
+    path('registrarse', RegistroView.as_view(), name='registrarse'),
 ]

@@ -12,7 +12,6 @@
             <th scope="col"><i class="fa-regular fa-calendar-days"></i> Fecha de creación</th>
             <th scope="col"><i class="fa-solid fa-hand-holding-dollar"></i> Medio de pago</th>
             <th scope="col"><i class="fa-solid fa-dollar-sign"></i>Total</th>
-            <!-- <th scope="col">Opciones</th> -->
         </tr>
     </thead>
     <tbody>
@@ -30,6 +29,11 @@
                 {% elif pedido.idEstado_id == 5 %} <!-- 5: Cancelado -->
                     <p class="btn btn-secondary">{{ pedido.idEstado }}</p>
                 {% endif %}
+
+                {% if pedido.idEstado_id  != 5 %}
+                    <a href="/internal/pedidos/orden/{{ pedido.id }}/modifica/estado"><p class="btn btn-primary">Modificar estado</p></a>
+                {% endif %}
+
             </td>
             <td>{{ pedido.fecha_creacion }}</td>
             <td>
@@ -50,7 +54,6 @@
                 {% endif %}
             </td>
             <td>$ {{ pedido.total_pedido }}</td>
-            <!-- <td><a href="/internal/pedidos/orden/{{ pedido.id }}" class="btn btn-primary">Ver detalle</a></td> -->
         </tr>
     </tbody>
 </table>
@@ -116,4 +119,4 @@
 
 
 
-{% endblock%}
+{% endblock %}

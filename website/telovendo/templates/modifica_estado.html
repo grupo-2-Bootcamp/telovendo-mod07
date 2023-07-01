@@ -1,0 +1,30 @@
+{% extends "components/base_internal_part.html" %}
+
+{% block content %}
+
+    Estado actual del pedido: 
+
+    {% if pedido.idEstado_id   == 1 %} <!-- 1: En preparación -->
+        <p class="btn btn-primary">{{ pedido.idEstado }}</p>
+    {% elif pedido.idEstado_id == 2 %} <!-- 2: Pendiente -->
+        <p class="btn btn-warning">{{ pedido.idEstado }}</p>
+    {% elif pedido.idEstado_id == 3 %} <!-- 3: En despacho -->
+        <p class="btn btn-info">{{ pedido.idEstado }}</p>
+    {% elif pedido.idEstado_id == 4 %} <!-- 4: Entregado -->
+        <p class="btn btn-success">{{ pedido.idEstado }}</p>
+    {% elif pedido.idEstado_id == 5 %} <!-- 5: Cancelado -->
+        <p class="btn btn-secondary">{{ pedido.idEstado }}</p>
+    {% endif %}
+
+
+    {% if pedido.idEstado_id   != 5 %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    {% else %}
+        <p>Esta orden esta cancelada, por lo que ya no se puede modificar su estado.</p>
+    {% endif %}
+
+{% endblock %}

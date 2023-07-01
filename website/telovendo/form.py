@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from telovendo.models import CustomUser, Empresas
+from telovendo.models import CustomUser, Empresas, Estado_Pedido, Pedidos
 from django.contrib.auth.models import User, Group
 
 
@@ -130,6 +130,14 @@ class FormularioRegistro(forms.ModelForm):
     #                                 'class': 'form-control'
     #                             })
     #                             )
-    
-    
-    # 
+
+
+class FormularioUpdateEstado(forms.ModelForm):
+    idEstado = forms.ModelChoiceField(label="Estado", empty_label=("Seleccione un estado"),
+                                        queryset=Estado_Pedido.objects.all(), required=False, 
+                                        widget= forms.Select(attrs={
+                                            'class':'form-select'}),)
+
+    class Meta:
+        model = Pedidos
+        fields = ('idEstado',)
