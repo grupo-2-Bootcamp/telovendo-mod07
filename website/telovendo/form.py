@@ -133,11 +133,15 @@ class FormularioRegistro(forms.ModelForm):
 
 
 class FormularioUpdateEstado(forms.ModelForm):
-    idEstado = forms.ModelChoiceField(label="Estado", empty_label=("Seleccione un estado"),
-                                        queryset=Estado_Pedido.objects.all(), required=False, 
-                                        widget= forms.Select(attrs={
-                                            'class':'form-select'}),)
-
+    
     class Meta:
         model = Pedidos
         fields = ('idEstado',)
+        labels = {'idEstado': 'Nuevo estado a actualizar',}
+        widgets = {
+            'idEstado': forms.Select(attrs={'class': 'form-select', 'required': True,}, ),
+            }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['idEstado'].empty_label = 'Seleccione un estado'
