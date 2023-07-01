@@ -53,7 +53,7 @@ class PedidosView(TemplateView):            # Vista de pedidos
 
     def get(self, request, *args, **kwargs):
         title = 'Gestión de pedidos'
-        pedidos = Pedidos.objects.all()
+        pedidos = Pedidos.objects.all().order_by('id')
         context ={
             'title':title,
             'pedidos': pedidos
