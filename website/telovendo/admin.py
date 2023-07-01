@@ -70,7 +70,7 @@ class Pedidos_Admin(admin.ModelAdmin):              # Modelo de Pedidos
     list_filter = ['fecha_creacion', 'idEstado', 'idUsuario', 'idEmpresa']
     search_fields = ['fecha_creacion', 'idEstado', 'idUsuario', 'idEmpresa']
     ordering = ['id']
-    fields = ['fecha_creacion', 'idMetodoPago', 'idEstado', 'idDireccion', 'idUsuario', 'idEmpresa','total_pedido']
+    fields = ['fecha_creacion', 'idMetodoPago', 'idEstado', 'idDireccion', 'instrucciones_entrega', 'idUsuario', 'idEmpresa', 'total_pedido']
 
 admin.site.register(Pedidos, Pedidos_Admin)
 

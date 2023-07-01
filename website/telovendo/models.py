@@ -45,7 +45,7 @@ class MetodoPago(models.Model):             # Modelo de métodos de pago
 
 class Empresas(models.Model):               # Modelo de listado de empresas
     rut = models.CharField(max_length=12, null=False, blank=False)
-    nombre_empresa = models.CharField(max_length=30, null=False, blank=False)
+    nombre_empresa = models.CharField(max_length=50, null=False, blank=False)
 
     def __str__(self):
         return self.nombre_empresa
@@ -85,6 +85,7 @@ class Pedidos(models.Model):                # Modelo de pedidos
     idDireccion = models.ForeignKey(Direcciones, on_delete=models.DO_NOTHING, null=False, blank=False)
     idUsuario = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True, blank=True)
     idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=True, blank=True)
+    instrucciones_entrega = models.CharField(max_length=100, null=True, blank=True)
     total_pedido = models.IntegerField(null=False, blank=False)
 
     def __str__(self):

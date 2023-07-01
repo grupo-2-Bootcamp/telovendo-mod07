@@ -63,21 +63,23 @@ class PedidosView(TemplateView):            # Vista de pedidos
 class DetallesPedidosView(TemplateView):            # Vista de pagina detalles pedidos
     template_name = "detalles_pedidos.html"
     def get(self, request, idpedido, *args, **kwargs):
-        title = "Bienvenido a la vista de los detalles de pedidos"
-        pedidos = Pedidos.objects.get(id=idpedido)
-        empresas = Empresas.objects.get(id=pedidos.idEmpresa_id)
-        direcciones = Direcciones.objects.get(id=pedidos.idDireccion_id)
-        detalles_pedidos = Detalles_Pedido.objects.filter(idPedidos=idpedido)
-        productos = []
-        for detalle in detalles_pedidos:
-            productos.append(Productos.objects.get(id=detalle.idProductos_id))
+        
+        pedido = Pedidos.objects.get(id=idpedido)
+        empresa = Empresas.objects.get(id=pedido.idEmpresa_id)
+        usuario = CustomUser.objects.get(id=pedido.idUsuario_id)
+        direccion = Direcciones.objects.get(id=pedido.idDireccion_id)
+        detalle_pedido = Detalles_Pedido.objects.filter(idPedidos=idpedido)
+        # productos = []
+        # for detalle in detalle_pedido:
+        #     productos.append(Productos.objects.get(id=detalle.idProductos_id))
         context ={
-            'title':title,
-            'pedidos': pedidos,
-            'empresas': empresas,
-            'direcciones': direcciones,
-            'detalles_pedidos': detalles_pedidos,
-            'productos': productos
+            'title': f'Detalle de orden {pedido}',
+            'pedido': pedido,
+            'empresa': empresa,
+            'direccion': direccion,
+            'detalle_pedido': detalle_pedido,
+            'usuario': usuario,
+            # 'productos': productos
             }
         return render(request, self.template_name, context)
     
