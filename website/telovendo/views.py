@@ -64,15 +64,14 @@ class PedidosView(TemplateView):            # Vista de pedidos
 class DetallesPedidosView(TemplateView):            # Vista de pagina detalles pedidos
     template_name = 'detalles_pedidos.html'
     def get(self, request, idpedido, *args, **kwargs):
-        
-        pedido = Pedidos.objects.get(id=idpedido)
+        try:
+            pedido = Pedidos.objects.get(id=idpedido)
+        except Pedidos.DoesNotExist:
+            return render(request, 'elemento_no_existe.html')
         empresa = Empresas.objects.get(id=pedido.idEmpresa_id)
         usuario = CustomUser.objects.get(id=pedido.idUsuario_id)
         direccion = Direcciones.objects.get(id=pedido.idDireccion_id)
         detalle_pedido = Detalles_Pedido.objects.filter(idPedidos=idpedido)
-        # productos = []
-        # for detalle in detalle_pedido:
-        #     productos.append(Productos.objects.get(id=detalle.idProductos_id))
         context ={
             'title': f'Detalle de orden {pedido}',
             'pedido': pedido,
@@ -80,24 +79,27 @@ class DetallesPedidosView(TemplateView):            # Vista de pagina detalles p
             'direccion': direccion,
             'detalle_pedido': detalle_pedido,
             'usuario': usuario,
-            # 'productos': productos
             }
         return render(request, self.template_name, context)
 
 class UpdateEstadoPedidoView(TemplateView):
     template_name = 'modifica_estado.html'
-        
-    def get_context_data(self, idpedido, **kwargs):
-        context = super().get_context_data(**kwargs)
-        instance = get_object_or_404(Pedidos, id=self.kwargs['idpedido'])
+    
+    def get(self, request, *args, **kwargs):
+        idpedido = kwargs['idpedido']
+        try:
+            pedido = Pedidos.objects.get(id=idpedido)
+        except Pedidos.DoesNotExist:
+            return render(request, 'elemento_no_existe.html')
         volver_atras = reverse('detalle_pedido', kwargs={'idpedido': idpedido})
-        context= {
-            'form' : FormularioUpdateEstado(instance=instance),
-            'title': f'Modificar el estado del pedido {idpedido}',
+        context = {
+            'form': FormularioUpdateEstado(instance=pedido),
+            'idpedido': idpedido,
             'pedido': Pedidos.objects.get(id=idpedido),
+            'title': f'Modificar el estado del pedido {idpedido}',
             'volver_atras': volver_atras,
-            }
-        return context
+        }
+        return render(request, self.template_name, context)
 
     def post(self, request, idpedido, *args, **kwargs):
         instance = get_object_or_404(Pedidos, id=self.kwargs['idpedido'])
@@ -166,7 +168,7 @@ class ProductosView(TemplateView):              #Vista del Registro de Productos
 
     def get(self, request, *args, **kwargs):
         title = 'Gestión de Productos'
-        productos = Productos.objects.all()
+        productos = Productos.objects.all().order_by('id')
         context = {
             'title': title,
             'productos': productos,
@@ -218,7 +220,10 @@ class ProductoEditView(TemplateView):
     def get(self, request, *args, **kwargs):
         title = 'Editar datos del Producto'
         id_producto = kwargs['id_producto']
-        producto = Productos.objects.get(id=id_producto)
+        try:
+            producto = Productos.objects.get(id=id_producto)
+        except Productos.DoesNotExist:
+            return render(request, 'elemento_no_existe.html')
         form = FormularioEditarProductos(instance=producto)
         context = {
             'form': form,
