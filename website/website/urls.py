@@ -24,7 +24,7 @@ from django.contrib.auth.decorators import login_required
 from mainsite.views import Index
 
 # Vistas de la app principal
-from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, DetallesPedidosView, UpdateEstadoPedidoView
+from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, DetallesPedidosView, UpdateEstadoPedidoView, ProductosView, ProductoEditView, ProductoCreateView, ProductoDeleteView
 
 
 urlpatterns = [
@@ -37,4 +37,8 @@ urlpatterns = [
     path('internal/pedidos/orden/<int:idpedido>', login_required(DetallesPedidosView.as_view()), name='detalle_pedido'),
     path('internal/pedidos/orden/<int:idpedido>/modifica/estado', login_required(UpdateEstadoPedidoView.as_view()), name='modifica_estado_pedido'),
     path('registrarse', RegistroView.as_view(), name='registrarse'),
+    path('internal/productos/', ProductosView.as_view(), name='productos'),
+    path('internal/productos/agregar/', ProductoCreateView.as_view(), name='agregar_producto'),
+    path('internal/productos/<int:id_producto>/editar/', ProductoEditView.as_view(), name='editar_producto'),
+    path('internal/productos/<int:pk>/eliminar/', ProductoDeleteView.as_view(), name='eliminar_producto'),
 ]

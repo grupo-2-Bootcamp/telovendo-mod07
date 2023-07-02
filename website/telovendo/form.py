@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from telovendo.models import CustomUser, Empresas, Estado_Pedido, Pedidos
+from telovendo.models import CustomUser, Empresas, Estado_Pedido, Pedidos, Productos
 from django.contrib.auth.models import User, Group
 
 
@@ -141,3 +141,80 @@ class FormularioUpdateEstado(forms.ModelForm):
     class Meta:
         model = Pedidos
         fields = ('idEstado',)
+
+class FormularioProductos(forms.Form):
+    nombre = forms.CharField    (label="Nombre del producto", required = True,
+                                        max_length=45,
+                                        error_messages={
+                                            'required': 'El nombre del producto es obligatorio',
+                                            'max_length': 'El nombre debe tener como maximo 45 caracteres',
+                                        },
+                                        widget= forms.TextInput(attrs={
+                                            'placeholder': 'Ingrese el nombre del producto',
+                                            'class':'form-control'}),
+                                    )
+
+    descripcion =  forms.CharField    (label="Descripción", required = True,
+                                        max_length=45,
+                                        error_messages={
+                                            'required': 'La descripción del producto es obligatoria',
+                                            'max_length': 'La descripción debe tener como maximo 45 caracteres',
+                                        },
+                                        widget= forms.TextInput(attrs={
+                                            'placeholder': 'Ingrese la descripcion del producto es obligatorio',
+                                            'class':'form-control'}),
+                                    )
+
+    stock = forms.IntegerField      (label="Stock", required = True,
+                                        error_messages={
+                                            'required': 'El stock del producto es obligatorio',
+                                        },
+                                        widget= forms.TextInput(attrs={
+                                            'placeholder': 'Ingrese el stock del producto',
+                                            'class':'form-control'}),
+                                    )
+
+    precio = forms.IntegerField    (label="Precio", required = True,
+                                        error_messages={
+                                            'required': 'El precio del producto es obligatorio',
+                                        },
+                                        widget= forms.TextInput(attrs={
+                                            'placeholder': 'Ingrese el precio del producto',
+                                            'class':'form-control'}),
+                                    )
+    
+class FormularioEditarProductos(forms.ModelForm):
+    nombre = forms.CharField    (label="Nombre del producto", required = False,
+                                        max_length=45,
+                                        error_messages={
+                                            'max_length': 'El nombre debe tener como maximo 45 caracteres',
+                                        },
+                                        widget= forms.TextInput(attrs={
+                                            'placeholder': 'Ingrese el nombre del producto',
+                                            'class':'form-control'}),
+                                    )
+
+    descripcion =  forms.CharField    (label="Descripción", required = False,
+                                        max_length=45,
+                                        error_messages={
+                                            'max_length': 'La descripción debe tener como maximo 45 caracteres',
+                                        },
+                                        widget= forms.TextInput(attrs={
+                                            'placeholder': 'Ingrese la descripcion del producto es obligatorio',
+                                            'class':'form-control'}),
+                                    )
+
+    stock = forms.IntegerField      (label="Stock", required = False,
+                                        widget= forms.TextInput(attrs={
+                                            'placeholder': 'Ingrese el stock del producto',
+                                            'class':'form-control'}),
+                                    )
+
+    precio = forms.IntegerField    (label="Precio", required = False,
+                                        widget= forms.TextInput(attrs={
+                                            'placeholder': 'Ingrese el precio del producto',
+                                            'class':'form-control'}),
+                                    )
+    class Meta:
+        model = Productos
+        fields = ['nombre', 'descripcion', 'stock', 'precio']

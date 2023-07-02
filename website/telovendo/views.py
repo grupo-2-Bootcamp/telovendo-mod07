@@ -1,13 +1,14 @@
 import os
 import random
 import string
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login
-from django.views.generic import TemplateView
-from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado
+from django.views.generic import TemplateView, DeleteView
+from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado, FormularioProductos, FormularioEditarProductos
 from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Estado_Pedido, Productos
-
+from django.http import HttpResponseBadRequest
 from django.core.mail import send_mail
+from django.urls import reverse_lazy
 
 # Genera contraseñas aleatorias
 def generate_random_password():
@@ -150,3 +151,98 @@ class RegistroView(TemplateView):           # Vista de registro de usuarios
 
         return render(request, self.template_name, context)
 
+class ProductosView(TemplateView):              #Vista del Registro de Productos
+    template_name = 'productos.html'
+
+    def get(self, request, *args, **kwargs):
+        title = 'Gestión de Productos'
+        productos = Productos.objects.all()
+        context = {
+            'title': title,
+            'productos': productos,
+        }
+        return render(request, self.template_name, context)
+
+class ProductoCreateView(TemplateView): 
+    template_name = 'agregar_producto.html'
+    def get(self, request, *args, **kwargs):
+        title = 'Crear nuevo Producto'
+        form = FormularioProductos()
+        context = {
+            'title': title,
+            'form': form
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        form = FormularioProductos(request.POST, request.FILES)
+        title = 'Gestión de Productos'
+        if form.is_valid():
+            nombre = form.cleaned_data['nombre']
+            descripcion = form.cleaned_data['descripcion']
+            precio = form.cleaned_data['precio']
+            stock = form.cleaned_data['stock']
+            registro = Productos(
+                nombre=nombre,
+                descripcion=descripcion,
+                precio=precio,
+                stock=stock
+            )
+            registro.save()
+            mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo producto exitosamente'}
+            return redirect('productos')
+        else:
+            mensajes = {'enviado': False, 'resultado': form.errors}
+
+        context = {
+            'title': title,
+            'mensajes': mensajes,
+            'form': form
+        }
+        return render(request, self.template_name, context)
+
+
+class ProductoEditView(TemplateView):
+    template_name = 'editar_producto.html'
+
+    def get(self, request, *args, **kwargs):
+        title = 'Editar datos del Producto'
+        id_producto = kwargs['id_producto']
+        producto = Productos.objects.get(id=id_producto)
+        form = FormularioEditarProductos(instance=producto)
+        context = {
+            'form': form,
+            'id_producto': id_producto,
+            'title': title
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        id_producto = kwargs['id_producto']
+        producto = Productos.objects.get(id=id_producto)
+        form = FormularioEditarProductos(request.POST, instance=producto)
+        if form.is_valid():
+            form.save()
+            mensajes = {'enviado': True, 'resultado': 'Has actualizado el producto exitosamente'}
+            return redirect('productos') 
+        else:
+            mensajes = {'enviado': False, 'resultado': form.errors}
+        context = {
+            'form': form,
+            'id_producto': id_producto,
+            'mensajes': mensajes
+        }
+        return render(request, self.template_name, context)
+    
+class ProductoDeleteView(DeleteView):
+    model = Productos
+    template_name = 'eliminar_producto.html'
+    def get(self, request, *args, **kwargs):
+        title = 'Eliminar Producto'
+        context = {
+            'title': title
+        }
+        return render(request, self.template_name, context)
+    
+    def get_success_url(self):
+        return reverse('productos')
