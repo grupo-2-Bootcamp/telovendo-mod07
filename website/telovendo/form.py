@@ -137,10 +137,17 @@ class FormularioUpdateEstado(forms.ModelForm):
                                         queryset=Estado_Pedido.objects.all(), required=False, 
                                         widget= forms.Select(attrs={
                                             'class':'form-select'}),)
-
     class Meta:
         model = Pedidos
         fields = ('idEstado',)
+        labels = {'idEstado': 'Nuevo estado a actualizar',}
+        widgets = {
+            'idEstado': forms.Select(attrs={'class': 'form-select', 'required': True,}, ),
+            }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['idEstado'].empty_label = 'Seleccione un estado'
 
 class FormularioProductos(forms.Form):
     nombre = forms.CharField    (label="Nombre del producto", required = True,

@@ -1,14 +1,15 @@
 import os
 import random
 import string
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView, DeleteView
-from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado, FormularioProductos, FormularioEditarProductos
+from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado,FormularioProductos, FormularioEditarProductos
 from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Estado_Pedido, Productos
 from django.http import HttpResponseBadRequest
 from django.core.mail import send_mail
 from django.urls import reverse_lazy
+from django.urls import reverse
 
 # Genera contraseñas aleatorias
 def generate_random_password():
@@ -53,7 +54,7 @@ class PedidosView(TemplateView):            # Vista de pedidos
 
     def get(self, request, *args, **kwargs):
         title = 'Gestión de pedidos'
-        pedidos = Pedidos.objects.all()
+        pedidos = Pedidos.objects.all().order_by('id')
         context ={
             'title':title,
             'pedidos': pedidos
@@ -85,18 +86,27 @@ class DetallesPedidosView(TemplateView):            # Vista de pagina detalles p
 
 class UpdateEstadoPedidoView(TemplateView):
     template_name = 'modifica_estado.html'
-    
-    def get(self, request, idpedido, *args, **kwargs):    
-        pedido = Pedidos.objects.get(id=idpedido)
-        estados = Estado_Pedido.objects.all()
-        form = FormularioUpdateEstado(request.POST)
-        context = {
-            'title': f'Modificar estado del pedido {pedido}',
-            'pedido': pedido,
-            'estados': estados,
-            'form': form,
-        }
-        return render(request, self.template_name, context)
+        
+    def get_context_data(self, idpedido, **kwargs):
+        context = super().get_context_data(**kwargs)
+        instance = get_object_or_404(Pedidos, id=self.kwargs['idpedido'])
+        volver_atras = reverse('detalle_pedido', kwargs={'idpedido': idpedido})
+        context= {
+            'form' : FormularioUpdateEstado(instance=instance),
+            'title': f'Modificar el estado del pedido {idpedido}',
+            'pedido': Pedidos.objects.get(id=idpedido),
+            'volver_atras': volver_atras,
+            }
+        return context
+
+    def post(self, request, idpedido, *args, **kwargs):
+        instance = get_object_or_404(Pedidos, id=self.kwargs['idpedido'])
+        form = FormularioUpdateEstado(request.POST, instance=instance)
+        reenvio = reverse('detalle_pedido', kwargs={'idpedido': idpedido})
+        if form.is_valid():
+            form.save()
+            return redirect(reenvio)
+        return self.render_to_response(self.get_context_data())
 
 
 class RegistroView(TemplateView):           # Vista de registro de usuarios 
