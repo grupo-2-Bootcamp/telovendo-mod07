@@ -102,11 +102,16 @@ class FormularioRegistro(forms.ModelForm):
                                         queryset=Empresas.objects.all(), required=False, 
                                         widget= forms.Select(attrs={
                                             'class':'form-select'}),)
-    # group = forms.ModelChoiceField  (queryset=Group.objects.all(), required=False, initial=Group.objects.first())
+    group = forms.ModelChoiceField(
+                                    label="Grupo",
+                                    queryset=Group.objects.filter(name='Clientes'),
+                                    required=True,
+                                    widget=forms.Select(attrs={'class': 'form-select'}),
+                                )
     
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('username', 'first_name', 'last_name','email', 'run', 'idEmpresa')
+        fields = ('username', 'first_name', 'last_name','email', 'run', 'idEmpresa', 'group')
 
     # password1 = forms.CharField(label='Contraseña', required=True,
     #                             max_length=30, min_length=1,

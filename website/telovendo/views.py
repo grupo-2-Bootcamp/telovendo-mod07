@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView, DeleteView
 from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado,FormularioProductos, FormularioEditarProductos
 from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Estado_Pedido, Productos
-from django.http import HttpResponseBadRequest
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.urls import reverse_lazy
 from django.urls import reverse
@@ -111,19 +111,17 @@ class UpdateEstadoPedidoView(TemplateView):
         return self.render_to_response(self.get_context_data())
 
 
-class RegistroView(TemplateView):           # Vista de registro de usuarios 
+class RegistroView(TemplateView):
     template_name = 'registro.html'
 
-    
     def get(self, request, *args, **kwargs):
         form = FormularioRegistro()
         title = 'Registro de Usuario'
         context = {
-            'formulario': form, 
+            'formulario': form,
             'title': title
-            }
-        
-        return render(request, self.template_name, context )
+        }
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         form = FormularioRegistro(request.POST, request.FILES)
@@ -131,12 +129,12 @@ class RegistroView(TemplateView):           # Vista de registro de usuarios
         if form.is_valid():
             username = form.cleaned_data['username']
             password = generate_random_password()
-            user = form.save(commit = False)
-            # group = form.cleaned_data['group']
-            # if group:
-            #     group.user_set.add(user)
+            user = form.save(commit=False)
             user.set_password(password)
             user.save()
+            group = form.cleaned_data['group']
+            if group:
+                group.user_set.add(user)
             mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo usuario exitosamente'}
         else:
             mensajes = {'enviado': False, 'resultado': form.errors}
@@ -161,7 +159,7 @@ class RegistroView(TemplateView):           # Vista de registro de usuarios
             fail_silently=False
         )
 
-        return render(request, self.template_name, context)
+        return render(request, self.template_name, context), redirect('login')
 
 class ProductosView(TemplateView):              #Vista del Registro de Productos
     template_name = 'productos.html'
