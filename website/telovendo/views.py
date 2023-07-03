@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.urls import reverse_lazy
 from django.urls import reverse
+from django.contrib import messages
 
 # Genera contraseñas aleatorias
 def generate_random_password():
@@ -147,30 +148,30 @@ class RegistroView(TemplateView):
             if group:
                 group.user_set.add(user)
             mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo usuario exitosamente'}
-        else:
-            mensajes = {'enviado': False, 'resultado': form.errors}
-        correo_destino = form.cleaned_data['email']
+            correo_destino = form.cleaned_data['email']
+            mensaje = f'''
+                Bienvenido a Telovendo.
+                Gracias por registrarte en nuestro sitio web. A continuación se le adjunta su contraseña de acceso
+                contraseña :   {password} 
+                Muchas Gracias por su preferencia
+            '''
+            send_mail(
+                '[TE LO VENDO] - Contraseña',
+                mensaje,
+                os.environ.get('EMAIL_HOST_USER'),  # Usar el correo configurado en settings.py
+                [correo_destino],  # Enviar el correo al destinatario ingresado por el usuario
+                fail_silently=False
+            )
+            messages.success(request, mensajes['resultado'])  # Almacenar el mensaje de éxito
+            return redirect('login')  # Redirigir al formulario de inicio de sesión
+
+        mensajes = {'enviado': False, 'resultado': form.errors}
         context = {
             'formulario': form,
             'mensajes': mensajes,
             'title': title
         }
-
-        mensaje = f'''
-                Bienvenido a Telovendo.
-                Gracias por registrarte en nuestro sitio web. A continuación se le adjunta su contraseña de acceso
-                contraseña :   {password} 
-                Muchas Gracias por su preferencia
-                    '''
-        send_mail(
-            '[TE LO VENDO] - Contraseña',
-            mensaje,
-            os.environ.get('EMAIL_HOST_USER'),  # Usar el correo configurado en settings.py
-            [correo_destino],  # Enviar el correo al destinatario ingresado por el usuario
-            fail_silently=False
-        )
-
-        return render(request, self.template_name, context), redirect('login')
+        return render(request, self.template_name, context)
 
 class ProductosView(TemplateView):              #Vista del Registro de Productos
     template_name = 'productos.html'
