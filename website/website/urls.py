@@ -30,6 +30,7 @@ from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, D
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Index.as_view(), name='index'),
+    path('registrarse', RegistroView.as_view(), name='registrarse'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('internal/home', login_required(InternoView.as_view()), name='internal'),
@@ -37,7 +38,6 @@ urlpatterns = [
     path('internal/pedidos/orden/<int:idpedido>', login_required(DetallesPedidosView.as_view()), name='detalle_pedido'),
     path('internal/pedidos/orden/<int:idpedido>/modifica/estado', login_required(UpdateEstadoPedidoView.as_view()), name='modifica_estado_pedido'),
     path('internal/pedidos/agregar/', login_required(AddPedidosView.as_view()), name='nuevo_pedido'),
-    path('registrarse', login_required(RegistroView.as_view()), name='registrarse'),
     path('internal/productos/', login_required(ProductosView.as_view()), name='productos'),
     path('internal/productos/agregar/', login_required(ProductoCreateView.as_view()), name='agregar_producto'),
     path('internal/productos/<int:id_producto>/editar/', login_required(ProductoEditView.as_view()), name='editar_producto'),
