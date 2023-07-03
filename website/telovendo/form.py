@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from telovendo.models import CustomUser, Empresas, Estado_Pedido, Pedidos, Productos, Direcciones
+from telovendo.models import CustomUser, Empresas, Estado_Pedido, Pedidos, Productos, Direcciones, MetodoPago, Detalles_Pedido
 from django.contrib.auth.models import User, Group
 
 
@@ -241,6 +241,27 @@ class FormularioPedidos(forms.ModelForm):
                                             widget= forms.Select(attrs={
                                                 'class':'form-select'}),
                                             )
-    instrucciones_pedido = forms.CharField  (label='Instrucciones de entrega', required = True,
+    instrucciones_entrega = forms.CharField  (label='Instrucciones de entrega', required = True,
+                                            widget= forms.Textarea(attrs={
+                                                'class':'form-control'}),
+                                            )
+    idMetodoPago = forms.ModelChoiceField    (label='Dirección', empty_label=('Seleccione un método de pago'), queryset=MetodoPago.objects.all(), required=True,
+                                            widget= forms.Select(attrs={
+                                                'class':'form-select'}),
                                             )
     
+    class Meta:
+        model = Pedidos
+        fields = ['idEmpresa', 'idDireccion', 'instrucciones_entrega', 'idMetodoPago']
+
+class FormularioDetalle(forms.ModelForm):
+
+    idProductos = forms.ModelChoiceField    (label='Producto', empty_label=('Seleccione un producto'), queryset=Productos.objects.all(), required=True,
+                                            widget= forms.Select(attrs={
+                                                'class':'form-select'}),
+                                            )
+    cantidad = forms.IntegerField           (label='Cantidad de articulos', required = True,)
+
+    class Meta:
+        model = Detalles_Pedido
+        fields = ['idProductos', 'cantidad']

@@ -24,7 +24,7 @@ from django.contrib.auth.decorators import login_required
 from mainsite.views import Index
 
 # Vistas de la app principal
-from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, DetallesPedidosView, UpdateEstadoPedidoView, ProductosView, ProductoEditView, ProductoCreateView, ProductoDeleteView, AddPedidosView
+from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, DetallesPedidosView, UpdateEstadoPedidoView, ProductosView, ProductoEditView, ProductoCreateView, ProductoDeleteView, AddPedidosView, AddPedidosPasoDosView
 
 
 urlpatterns = [
@@ -38,6 +38,7 @@ urlpatterns = [
     path('internal/pedidos/orden/<int:idpedido>', login_required(DetallesPedidosView.as_view()), name='detalle_pedido'),
     path('internal/pedidos/orden/<int:idpedido>/modifica/estado', login_required(UpdateEstadoPedidoView.as_view()), name='modifica_estado_pedido'),
     path('internal/pedidos/agregar/', login_required(AddPedidosView.as_view()), name='nuevo_pedido'),
+    path('internal/pedidos/agregar/paso-dos', login_required(AddPedidosPasoDosView.as_view()), name='nuevo_pedido_paso_dos'),
     path('internal/productos/', login_required(ProductosView.as_view()), name='productos'),
     path('internal/productos/agregar/', login_required(ProductoCreateView.as_view()), name='agregar_producto'),
     path('internal/productos/<int:id_producto>/editar/', login_required(ProductoEditView.as_view()), name='editar_producto'),

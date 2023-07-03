@@ -71,7 +71,7 @@ class Direcciones(models.Model):            # Modelo de direcciones de empresas
     descripcion = models.CharField(max_length=45, null=True, blank=True)
 
     def __str__(self):
-        return self.direccion
+        return (f'{self.direccion} {self.numero}, {self.Comuna}')
     
     class Meta:
         verbose_name = 'Dirección'

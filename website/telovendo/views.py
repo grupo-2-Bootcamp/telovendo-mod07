@@ -4,7 +4,7 @@ import string
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView, DeleteView
-from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado,FormularioProductos, FormularioEditarProductos
+from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado,FormularioProductos, FormularioEditarProductos, FormularioPedidos
 from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Estado_Pedido, Productos
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
@@ -62,16 +62,6 @@ class PedidosView(TemplateView):            # Vista de pedidos
         }
         return render(request,self.template_name, context)
 
-
-class AddPedidosView(TemplateView):
-    template_name = 'agregar_pedido.html'
-
-    def get(self, request, *args, **kwargs):
-        title = 'Crear un nuevo pedido'    
-        context ={
-            'title':title,
-        }
-        return render(request,self.template_name, context)
 
 class DetallesPedidosView(TemplateView):            # Vista de pagina detalles pedidos
     template_name = 'detalles_pedidos.html'
@@ -271,3 +261,58 @@ class ProductoDeleteView(DeleteView):
     
     def get_success_url(self):
         return reverse('productos')
+    
+
+class AddPedidosView(TemplateView):
+    template_name = 'agregar_pedido.html'
+
+    def get(self, request, *args, **kwargs):
+        title = 'Crear nuevo pedido'    
+        context ={
+            'title': title,
+            'form': FormularioPedidos()
+        }
+        return render(request,self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        form = FormularioPedidos(request.POST)
+        title = 'Crear nuevo pedido'
+        if form.is_valid():
+            idEmpresa = form.cleaned_data['idEmpresa']
+            idDireccion = form.cleaned_data['idDireccion']
+            instrucciones_entrega = form.cleaned_data['instrucciones_entrega']
+            idUsuario = CustomUser.objects.get(id=request.user.id)
+            idEstado = Estado_Pedido.objects.get(id=1)
+            idMetodoPago = form.cleaned_data['idMetodoPago']
+            registro = Pedidos(
+                idEmpresa = idEmpresa,
+                idDireccion = idDireccion,
+                instrucciones_entrega = instrucciones_entrega,
+                idUsuario = idUsuario,
+                idEstado = idEstado,
+                idMetodoPago = idMetodoPago,
+            )
+            registro.save()
+            mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo producto exitosamente'}
+            return redirect('nuevo_pedido_paso_dos')
+        else:
+            mensajes = {'enviado': False, 'resultado': form.errors}
+
+        context = {
+            'title': title,
+            'mensajes': mensajes,
+            'form': form
+        }
+        return render(request, self.template_name, context)
+    
+class AddPedidosPasoDosView(TemplateView):
+    template_name = 'agregar_pedido_paso_dos.html'
+
+    def get(self, request, *args, **kwargs):
+        title = 'Segundo paso'    
+        last_pedido = Pedidos.objects.filter(idUsuario=request.user).latest('id')
+        context ={
+            'title': title,
+            'last_pedido': last_pedido,
+        }
+        return render(request,self.template_name, context)
