@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from telovendo.models import CustomUser, Empresas, Estado_Pedido, Pedidos, Productos
+from telovendo.models import CustomUser, Empresas, Estado_Pedido, Pedidos, Productos, Direcciones
 from django.contrib.auth.models import User, Group
 
 
@@ -19,7 +19,7 @@ class CustomUserChangeForm(UserChangeForm):
 
 # Formulario de login
 class FormularioLogin(forms.Form):
-    email = forms.EmailField        (label="Email", required=True,
+    email = forms.EmailField        (label='Email', required=True,
                                         max_length=30,
                                         error_messages={
                                             'required': 'Tiene que indicar el email del usuario',
@@ -57,7 +57,7 @@ class FormularioRegistro(forms.ModelForm):
                                             'class': 'form-control'
                                         })
                                     )
-    first_name = forms.CharField    (label="Primer nombre", required = True,
+    first_name = forms.CharField    (label='Primer nombre', required = True,
                                         max_length=30,
                                         error_messages={
                                             'required': 'El primer nombre es obligatorio',
@@ -67,7 +67,7 @@ class FormularioRegistro(forms.ModelForm):
                                             'placeholder': 'Ingrese su primer nombre',
                                             'class':'form-control'}),
                                     )
-    last_name = forms.CharField     (label="Primer apellido", required = True,
+    last_name = forms.CharField     (label='Primer apellido', required = True,
                                         max_length=30,
                                         error_messages={
                                             'required': 'El primer apellido del usuario es obligatorio',
@@ -77,7 +77,7 @@ class FormularioRegistro(forms.ModelForm):
                                             'placeholder': 'Ingrese su primer apellido',
                                             'class':'form-control'}),
                                     )
-    email = forms.EmailField        (label="Dirección de email", required = True, 
+    email = forms.EmailField        (label='Dirección de email', required = True, 
                                         max_length=30,
                                         error_messages={
                                             'required': 'Tiene que indicar el email del usuario',
@@ -88,7 +88,7 @@ class FormularioRegistro(forms.ModelForm):
                                                 'class':'form-control',
                                                 'type':'email'})
                                     )
-    run = forms.CharField           (label="RUN", required = True,
+    run = forms.CharField           (label='RUN', required = True,
                                     max_length=12,
                                         error_messages={
                                             'required': 'El RUN del usuario es obligatorio',
@@ -98,12 +98,12 @@ class FormularioRegistro(forms.ModelForm):
                                             'placeholder': 'Ingrese su RUN',
                                             'class':'form-control'}),
                                     )
-    idEmpresa = forms.ModelChoiceField(label="Empresa", empty_label=("Seleccione una empresa"),
+    idEmpresa = forms.ModelChoiceField(label='Empresa', empty_label=('Seleccione una empresa'),
                                         queryset=Empresas.objects.all(), required=False, 
                                         widget= forms.Select(attrs={
                                             'class':'form-select'}),)
     group = forms.ModelChoiceField(
-                                    label="Grupo",
+                                    label='Grupo',
                                     queryset=Group.objects.filter(name='Clientes'),
                                     required=True,
                                     widget=forms.Select(attrs={'class': 'form-select'}),
@@ -138,7 +138,7 @@ class FormularioRegistro(forms.ModelForm):
 
 
 class FormularioUpdateEstado(forms.ModelForm):
-    idEstado = forms.ModelChoiceField(label="Estado", empty_label=("Seleccione un estado"),
+    idEstado = forms.ModelChoiceField(label='Estado', empty_label=('Seleccione un estado'),
                                         queryset=Estado_Pedido.objects.all(), required=False, 
                                         widget= forms.Select(attrs={
                                             'class':'form-select'}),)
@@ -155,7 +155,7 @@ class FormularioUpdateEstado(forms.ModelForm):
         self.fields['idEstado'].empty_label = 'Seleccione un estado'
 
 class FormularioProductos(forms.Form):
-    nombre = forms.CharField    (label="Nombre del producto", required = True,
+    nombre = forms.CharField    (label='Nombre del producto', required = True,
                                         max_length=45,
                                         error_messages={
                                             'required': 'El nombre del producto es obligatorio',
@@ -166,7 +166,7 @@ class FormularioProductos(forms.Form):
                                             'class':'form-control'}),
                                     )
 
-    descripcion =  forms.CharField    (label="Descripción", required = True,
+    descripcion =  forms.CharField    (label='Descripción', required = True,
                                         max_length=45,
                                         error_messages={
                                             'required': 'La descripción del producto es obligatoria',
@@ -177,7 +177,7 @@ class FormularioProductos(forms.Form):
                                             'class':'form-control'}),
                                     )
 
-    stock = forms.IntegerField      (label="Stock", required = True,
+    stock = forms.IntegerField      (label='Stock', required = True,
                                         error_messages={
                                             'required': 'El stock del producto es obligatorio',
                                         },
@@ -186,7 +186,7 @@ class FormularioProductos(forms.Form):
                                             'class':'form-control'}),
                                     )
 
-    precio = forms.IntegerField    (label="Precio", required = True,
+    precio = forms.IntegerField    (label='Precio', required = True,
                                         error_messages={
                                             'required': 'El precio del producto es obligatorio',
                                         },
@@ -196,7 +196,7 @@ class FormularioProductos(forms.Form):
                                     )
     
 class FormularioEditarProductos(forms.ModelForm):
-    nombre = forms.CharField    (label="Nombre del producto", required = False,
+    nombre = forms.CharField    (label='Nombre del producto', required = False,
                                         max_length=45,
                                         error_messages={
                                             'max_length': 'El nombre debe tener como maximo 45 caracteres',
@@ -206,7 +206,7 @@ class FormularioEditarProductos(forms.ModelForm):
                                             'class':'form-control'}),
                                     )
 
-    descripcion =  forms.CharField    (label="Descripción", required = False,
+    descripcion =  forms.CharField    (label='Descripción', required = False,
                                         max_length=45,
                                         error_messages={
                                             'max_length': 'La descripción debe tener como maximo 45 caracteres',
@@ -216,13 +216,13 @@ class FormularioEditarProductos(forms.ModelForm):
                                             'class':'form-control'}),
                                     )
 
-    stock = forms.IntegerField      (label="Stock", required = False,
+    stock = forms.IntegerField      (label='Stock', required = False,
                                         widget= forms.TextInput(attrs={
                                             'placeholder': 'Ingrese el stock del producto',
                                             'class':'form-control'}),
                                     )
 
-    precio = forms.IntegerField    (label="Precio", required = False,
+    precio = forms.IntegerField    (label='Precio', required = False,
                                         widget= forms.TextInput(attrs={
                                             'placeholder': 'Ingrese el precio del producto',
                                             'class':'form-control'}),
@@ -230,3 +230,17 @@ class FormularioEditarProductos(forms.ModelForm):
     class Meta:
         model = Productos
         fields = ['nombre', 'descripcion', 'stock', 'precio']
+
+class FormularioPedidos(forms.ModelForm):
+
+    idEmpresa = forms.ModelChoiceField      (label='Empresa', empty_label=('Seleccione una empresa'), queryset=Empresas.objects.all(), required=True,
+                                            widget= forms.Select(attrs={
+                                                'class':'form-select'}),
+                                            )
+    idDireccion = forms.ModelChoiceField    (label='Dirección', empty_label=('Seleccione una dirección'), queryset=Direcciones.objects.all(), required=True,
+                                            widget= forms.Select(attrs={
+                                                'class':'form-select'}),
+                                            )
+    instrucciones_pedido = forms.CharField  (label='Instrucciones de entrega', required = True,
+                                            )
+    

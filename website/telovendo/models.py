@@ -86,7 +86,7 @@ class Pedidos(models.Model):                # Modelo de pedidos
     idUsuario = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True, blank=True)
     idEmpresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING, null=True, blank=True)
     instrucciones_entrega = models.CharField(max_length=100, null=True, blank=True)
-    total_pedido = models.IntegerField(null=False, blank=False)
+    total_pedido = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return str(self.id)
