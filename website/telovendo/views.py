@@ -61,6 +61,17 @@ class PedidosView(TemplateView):            # Vista de pedidos
         }
         return render(request,self.template_name, context)
 
+
+class AddPedidosView(TemplateView):
+    template_name = 'agregar_pedido.html'
+
+    def get(self, request, *args, **kwargs):
+        title = 'Crear un nuevo pedido'    
+        context ={
+            'title':title,
+        }
+        return render(request,self.template_name, context)
+
 class DetallesPedidosView(TemplateView):            # Vista de pagina detalles pedidos
     template_name = 'detalles_pedidos.html'
     def get(self, request, idpedido, *args, **kwargs):
