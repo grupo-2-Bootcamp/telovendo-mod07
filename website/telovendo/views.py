@@ -213,6 +213,7 @@ class ProductoEditView(TemplateView):                                           
             return render(request, 'elemento_no_existe.html')
         form = FormularioEditarProductos(instance=producto)
         context = {
+            'title': '1/3 - Crear pedido',
             'form': form,
             'id_producto': id_producto,
         }
@@ -247,9 +248,16 @@ class AddPedidosPasoUnoView(TemplateView):                                      
     template_name  = 'agregar_pedido_paso_uno.html'
     
     def get(self, request, *args, **kwargs):
+        
+        if request.user.groups.first().id == 1:
+            empresas = Empresas.objects.filter(id=request.user.idEmpresa_id)
+        else:
+            empresas = Empresas.objects.all()
         context = {
-            'title': 'Primer paso: Crear pedido',
-            'form': FormularioSeleccionaEmpresa()
+            'title': '1/3 - Crear pedido',
+            'form': FormularioSeleccionaEmpresa(),
+            'usuario': request.user.groups.first().id,
+            'empresa': empresas
         }
         return render(request, self.template_name, context)
     
@@ -269,7 +277,7 @@ class AddPedidosPasoDosView(TemplateView):                                      
         direcciones = Direcciones.objects.filter(idEmpresa=empresa)
         metodospago = MetodoPago.objects.all().order_by('id')
         context ={
-            'title': 'Primer paso: Crear pedido',
+            'title': '2/3 - Seleccionar los datos de despacho',
             'form': FormularioPedidos(),
             'mensajes': mensajes,
             'empresa': empresa,
@@ -309,7 +317,7 @@ class AddPedidosPasoTresView(TemplateView):
     def get(self, request, *args, **kwargs):
         last_pedido = Pedidos.objects.filter(idUsuario=request.user).latest('id')
         context ={
-            'title': 'Segundo paso: Agregar productos al pedido',
+            'title': '3/3 - Completar el pedido',
             'last_pedido': last_pedido,
             'form': FormularioDetalle(),
             'detalle_pedido': Detalles_Pedido.objects.filter(idPedidos=last_pedido).annotate(total=F('cantidad') * F('precio')),

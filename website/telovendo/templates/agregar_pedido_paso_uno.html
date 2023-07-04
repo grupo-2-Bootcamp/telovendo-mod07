@@ -5,7 +5,15 @@
 <p>Para empezar el proceso, seleccione una empresa y presione continuar</p>
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <p>
+        <label for="id_idEmpresa">Empresa:</label>
+        <select name="idEmpresa" class="form-select" required id="id_idEmpresa">
+            <option value="" selected>Seleccione una empresa</option>
+            {% for element in empresa %}
+                <option value="{{element.id}}">{{element.nombre_empresa}}</option>
+            {% endfor %}
+        </select>
+    </p>
     <button type="submit" class="btn btn-primary mt-3">Continuar</button>
 </form>
 
