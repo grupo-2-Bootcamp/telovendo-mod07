@@ -244,7 +244,7 @@ class ProductoDeleteView(DeleteView):                                           
     
 
 class AddPedidosView(TemplateView):                                             # Agrega pedidos
-    template_name = 'agregar_pedido.html'
+    template_name = 'agregar_pedido_paso_dos.html'
 
     def get(self, request, *args, **kwargs):
         context ={
@@ -277,7 +277,7 @@ class AddPedidosView(TemplateView):                                             
         return render(request, self.template_name, context)
     
 class AddPedidosPasoDosView(TemplateView):
-    template_name = 'agregar_pedido_paso_dos.html'
+    template_name = 'agregar_pedido_paso_tres.html'
 
     def get(self, request, *args, **kwargs):
         last_pedido = Pedidos.objects.filter(idUsuario=request.user).latest('id')
