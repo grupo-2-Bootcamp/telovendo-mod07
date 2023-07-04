@@ -117,3 +117,10 @@ class Detalles_Pedido(models.Model):        # Modelo de detalle de pedido
 
 #     def __str__(self):
 #         return self.user.username
+
+class Secciones(models.Model):
+    class Meta:
+        permissions = (
+                        ("permiso_clientes", "Permisos necesarios para clientes"),
+                        ("permiso_trabajadores", "Permisos necesarios para trabajadores"),
+                    )
