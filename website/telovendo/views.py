@@ -19,7 +19,7 @@ def generate_random_password():
 
 # Create your views here.
 
-class LoginView(TemplateView):              # Vista de acceso al sistema interno
+class LoginView(TemplateView):                                      # Vista de acceso al sistema interno
     template_name = 'login.html'
 
     def get(self, request, *args, **kwargs):
@@ -42,7 +42,7 @@ class LoginView(TemplateView):              # Vista de acceso al sistema interno
             form.add_error('email', 'Se han ingresado las credenciales equivocadas.')
         return render(request, self.template_name, {'form': form, 'title': title})
 
-class InternoView(TemplateView):            # Vista de pagina principal interna
+class InternoView(TemplateView):                                    # Vista de pagina principal interna
     template_name = 'internal.html'
     def get(self, request, *args, **kwargs):
         context = {
@@ -51,7 +51,7 @@ class InternoView(TemplateView):            # Vista de pagina principal interna
         return render(request, self.template_name, context)
     
 
-class PedidosView(TemplateView):            # Vista de pedidos
+class PedidosView(TemplateView):                                    # Vista de pedidos
     template_name = 'pedidos.html'
 
     def get(self, request, *args, **kwargs):
@@ -62,7 +62,7 @@ class PedidosView(TemplateView):            # Vista de pedidos
         return render(request,self.template_name, context)
 
 
-class DetallesPedidosView(TemplateView):            # Vista de pagina detalles pedidos
+class DetallesPedidosView(TemplateView):                            # Listado de detalles de pedidos
     template_name = 'detalles_pedidos.html'
     def get(self, request, idpedido, *args, **kwargs):
         try:
@@ -77,10 +77,12 @@ class DetallesPedidosView(TemplateView):            # Vista de pagina detalles p
             'detalle_pedido': Detalles_Pedido.objects.filter(idPedidos=idpedido).annotate(total=F('cantidad') * F('precio')),
             'usuario': CustomUser.objects.get(id=pedido.idUsuario_id),
             'total_pedido': Detalles_Pedido.objects.filter(idPedidos=idpedido).aggregate(total=Sum(F('cantidad') * F('precio')))['total'],
+            'mensajes' : request.session.get('mensajes', None),
             }
+        request.session.pop('mensajes', None)
         return render(request, self.template_name, context)
 
-class UpdateEstadoPedidoView(TemplateView):
+class UpdateEstadoPedidoView(TemplateView):                         # Actualiza el estado de los pedidos
     template_name = 'modifica_estado.html'
     
     def get(self, request, *args, **kwargs):
@@ -97,17 +99,18 @@ class UpdateEstadoPedidoView(TemplateView):
         }
         return render(request, self.template_name, context)
 
-    def post(self, request, idpedido, *args, **kwargs):
+    def post(self, request, idpedido, *args, **kwargs):             
         instance = get_object_or_404(Pedidos, id=self.kwargs['idpedido'])
         form = FormularioUpdateEstado(request.POST, instance=instance)
         reenvio = reverse('detalle_pedido', kwargs={'idpedido': idpedido})
         if form.is_valid():
             form.save()
+            request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha actualizado el estado del pedido'}
             return redirect(reenvio)
         return self.render_to_response(self.get_context_data())
 
 
-class RegistroView(TemplateView):
+class RegistroView(TemplateView):                                   # Crea usuarios
     template_name = 'registro.html'
 
     def get(self, request, *args, **kwargs):
@@ -155,14 +158,16 @@ class RegistroView(TemplateView):
         }
         return render(request, self.template_name, context)
 
-class ProductosView(TemplateView):              #Vista del Registro de Productos
+class ProductosView(TemplateView):                                  # Lista los productos
     template_name = 'productos.html'
 
     def get(self, request, *args, **kwargs):
         context = {
             'title': 'Gestión de Productos',
             'productos': Productos.objects.all().order_by('id'),
+            'mensajes' : request.session.get('mensajes', None),
         }
+        request.session.pop('mensajes', None)
         return render(request, self.template_name, context)
 
 class ProductoCreateView(TemplateView): 
@@ -185,7 +190,7 @@ class ProductoCreateView(TemplateView):
                 stock= form.cleaned_data['stock'],
             )
             registro.save()
-            mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo producto exitosamente'}
+            request.session['mensajes'] = {'enviado': True, 'resultado': 'Has creado el producto exitosamente'}
             return redirect('productos')
         else:
             mensajes = {'enviado': False, 'resultado': form.errors}
@@ -197,7 +202,7 @@ class ProductoCreateView(TemplateView):
         return render(request, self.template_name, context)
 
 
-class ProductoEditView(TemplateView):
+class ProductoEditView(TemplateView):                                           # Lista los productos
     template_name = 'editar_producto.html'
 
     def get(self, request, *args, **kwargs):
@@ -219,7 +224,7 @@ class ProductoEditView(TemplateView):
         form = FormularioEditarProductos(request.POST, instance=producto)
         if form.is_valid():
             form.save()
-            mensajes = {'enviado': True, 'resultado': 'Has actualizado el producto exitosamente'}
+            request.session['mensajes'] = {'enviado': True, 'resultado': 'Has actualizado el producto exitosamente'}
             return redirect('productos') 
         else:
             mensajes = {'enviado': False, 'resultado': form.errors}
@@ -230,26 +235,21 @@ class ProductoEditView(TemplateView):
         }
         return render(request, self.template_name, context)
     
-class ProductoDeleteView(DeleteView):
+class ProductoDeleteView(DeleteView):                                           # Elimina productos
     model = Productos
     template_name = 'eliminar_producto.html'
-    def get(self, request, *args, **kwargs):
-        context = {
-            'title': 'Eliminar Producto',
-        }
-        return render(request, self.template_name, context)
     
     def get_success_url(self):
         return reverse('productos')
     
 
-class AddPedidosView(TemplateView):
+class AddPedidosView(TemplateView):                                             # Agrega pedidos
     template_name = 'agregar_pedido.html'
 
     def get(self, request, *args, **kwargs):
         context ={
             'title': 'Crear nuevo pedido',
-            'form': FormularioPedidos()
+            'form': FormularioPedidos(),
         }
         return render(request,self.template_name, context)
     
@@ -265,7 +265,7 @@ class AddPedidosView(TemplateView):
                 idMetodoPago = form.cleaned_data['idMetodoPago'],
             )
             registro.save()
-            mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo producto exitosamente'}
+            request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha creado el producto exitosamente'}
             return redirect('nuevo_pedido_paso_dos')
         else:
             mensajes = {'enviado': False, 'resultado': form.errors}
