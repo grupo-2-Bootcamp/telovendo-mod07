@@ -28,11 +28,11 @@
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary mt-3">Actualizar estado de pedido</button> <a href="{{ vuelve_atras }}"><button type="submit" class="btn btn-primary mt-3">Volver atrás</button></a>
+            <button type="submit" class="btn btn-primary mt-3">Actualizar estado de pedido</button> <a href="{% url 'detalle_pedido' idpedido=pedido.id %}" class="btn btn-primary mt-3">Volver atrás</a>
         </form>
             {% else %}
                 <h5>Esta orden esta cancelada, por lo que ya no se puede modificar su estado.</h5>
-                <a href="{{ vuelve_atras }}"><button type="submit" class="btn btn-primary mt-3">Volver atrás</button></a>
+                <a href="{% url 'detalle_pedido' idpedido=pedido.id %}" class="btn btn-primary mt-3">Volver atrás</a>
             {% endif %}
     </div>
 </div>

@@ -55,11 +55,9 @@ class PedidosView(TemplateView):            # Vista de pedidos
     template_name = 'pedidos.html'
 
     def get(self, request, *args, **kwargs):
-        title = 'Gestión de pedidos'
-        pedidos = Pedidos.objects.all().order_by('id')
         context ={
-            'title':title,
-            'pedidos': pedidos
+            'title': 'Gestión de pedidos',
+            'pedidos': Pedidos.objects.all().order_by('id'),
         }
         return render(request,self.template_name, context)
 
@@ -71,19 +69,14 @@ class DetallesPedidosView(TemplateView):            # Vista de pagina detalles p
             pedido = Pedidos.objects.get(id=idpedido)
         except Pedidos.DoesNotExist:
             return render(request, 'elemento_no_existe.html')
-        empresa = Empresas.objects.get(id=pedido.idEmpresa_id)
-        usuario = CustomUser.objects.get(id=pedido.idUsuario_id)
-        direccion = Direcciones.objects.get(id=pedido.idDireccion_id)
-        detalle_pedido = Detalles_Pedido.objects.filter(idPedidos=idpedido).annotate(total=F('cantidad') * F('precio'))
-        total_pedido = Detalles_Pedido.objects.filter(idPedidos=idpedido).aggregate(total=Sum(F('cantidad') * F('precio')))['total']
         context ={
             'title': f'Detalle de orden {pedido}',
             'pedido': pedido,
-            'empresa': empresa,
-            'direccion': direccion,
-            'detalle_pedido': detalle_pedido,
-            'usuario': usuario,
-            'total_pedido': total_pedido,
+            'empresa': Empresas.objects.get(id=pedido.idEmpresa_id),
+            'direccion': Direcciones.objects.get(id=pedido.idDireccion_id),
+            'detalle_pedido': Detalles_Pedido.objects.filter(idPedidos=idpedido).annotate(total=F('cantidad') * F('precio')),
+            'usuario': CustomUser.objects.get(id=pedido.idUsuario_id),
+            'total_pedido': Detalles_Pedido.objects.filter(idPedidos=idpedido).aggregate(total=Sum(F('cantidad') * F('precio')))['total'],
             }
         return render(request, self.template_name, context)
 
@@ -96,13 +89,11 @@ class UpdateEstadoPedidoView(TemplateView):
             pedido = Pedidos.objects.get(id=idpedido)
         except Pedidos.DoesNotExist:
             return render(request, 'elemento_no_existe.html')
-        volver_atras = reverse('detalle_pedido', kwargs={'idpedido': idpedido})
         context = {
             'form': FormularioUpdateEstado(instance=pedido),
             'idpedido': idpedido,
             'pedido': Pedidos.objects.get(id=idpedido),
             'title': f'Modificar el estado del pedido {idpedido}',
-            'volver_atras': volver_atras,
         }
         return render(request, self.template_name, context)
 
@@ -120,11 +111,9 @@ class RegistroView(TemplateView):
     template_name = 'registro.html'
 
     def get(self, request, *args, **kwargs):
-        form = FormularioRegistro()
-        title = 'Registro de Usuario'
         context = {
-            'formulario': form,
-            'title': title
+            'formulario': FormularioRegistro(),
+            'title': 'Registro de Usuario',
         }
         return render(request, self.template_name, context)
 
@@ -170,47 +159,38 @@ class ProductosView(TemplateView):              #Vista del Registro de Productos
     template_name = 'productos.html'
 
     def get(self, request, *args, **kwargs):
-        title = 'Gestión de Productos'
-        productos = Productos.objects.all().order_by('id')
         context = {
-            'title': title,
-            'productos': productos,
+            'title': 'Gestión de Productos',
+            'productos': Productos.objects.all().order_by('id'),
         }
         return render(request, self.template_name, context)
 
 class ProductoCreateView(TemplateView): 
     template_name = 'agregar_producto.html'
     def get(self, request, *args, **kwargs):
-        title = 'Crear nuevo Producto'
-        form = FormularioProductos()
+
         context = {
-            'title': title,
-            'form': form
+            'title': 'Crear nuevo Producto',
+            'form': FormularioProductos(),
         }
         return render(request, self.template_name, context)
     
     def post(self, request, *args, **kwargs):
         form = FormularioProductos(request.POST, request.FILES)
-        title = 'Gestión de Productos'
         if form.is_valid():
-            nombre = form.cleaned_data['nombre']
-            descripcion = form.cleaned_data['descripcion']
-            precio = form.cleaned_data['precio']
-            stock = form.cleaned_data['stock']
             registro = Productos(
-                nombre=nombre,
-                descripcion=descripcion,
-                precio=precio,
-                stock=stock
+                nombre= form.cleaned_data['nombre'],
+                descripcion= form.cleaned_data['descripcion'],
+                precio= form.cleaned_data['precio'],
+                stock= form.cleaned_data['stock'],
             )
             registro.save()
             mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo producto exitosamente'}
             return redirect('productos')
         else:
             mensajes = {'enviado': False, 'resultado': form.errors}
-
         context = {
-            'title': title,
+            'title': 'Crear nuevo Producto',
             'mensajes': mensajes,
             'form': form
         }
@@ -221,7 +201,6 @@ class ProductoEditView(TemplateView):
     template_name = 'editar_producto.html'
 
     def get(self, request, *args, **kwargs):
-        title = 'Editar datos del Producto'
         id_producto = kwargs['id_producto']
         try:
             producto = Productos.objects.get(id=id_producto)
@@ -231,7 +210,6 @@ class ProductoEditView(TemplateView):
         context = {
             'form': form,
             'id_producto': id_producto,
-            'title': title
         }
         return render(request, self.template_name, context)
 
@@ -256,9 +234,8 @@ class ProductoDeleteView(DeleteView):
     model = Productos
     template_name = 'eliminar_producto.html'
     def get(self, request, *args, **kwargs):
-        title = 'Eliminar Producto'
         context = {
-            'title': title
+            'title': 'Eliminar Producto',
         }
         return render(request, self.template_name, context)
     
@@ -270,30 +247,22 @@ class AddPedidosView(TemplateView):
     template_name = 'agregar_pedido.html'
 
     def get(self, request, *args, **kwargs):
-        title = 'Crear nuevo pedido'    
         context ={
-            'title': title,
+            'title': 'Crear nuevo pedido',
             'form': FormularioPedidos()
         }
         return render(request,self.template_name, context)
     
     def post(self, request, *args, **kwargs):
         form = FormularioPedidos(request.POST)
-        title = 'Crear nuevo pedido'
         if form.is_valid():
-            idEmpresa = form.cleaned_data['idEmpresa']
-            idDireccion = form.cleaned_data['idDireccion']
-            instrucciones_entrega = form.cleaned_data['instrucciones_entrega']
-            idUsuario = CustomUser.objects.get(id=request.user.id)
-            idEstado = Estado_Pedido.objects.get(id=1)
-            idMetodoPago = form.cleaned_data['idMetodoPago']
             registro = Pedidos(
-                idEmpresa = idEmpresa,
-                idDireccion = idDireccion,
-                instrucciones_entrega = instrucciones_entrega,
-                idUsuario = idUsuario,
-                idEstado = idEstado,
-                idMetodoPago = idMetodoPago,
+                idEmpresa = form.cleaned_data['idEmpresa'],
+                idDireccion = form.cleaned_data['idDireccion'],
+                instrucciones_entrega = form.cleaned_data['instrucciones_entrega'],
+                idUsuario = CustomUser.objects.get(id=request.user.id),
+                idEstado = Estado_Pedido.objects.get(id=1),
+                idMetodoPago = form.cleaned_data['idMetodoPago'],
             )
             registro.save()
             mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo producto exitosamente'}
@@ -302,39 +271,33 @@ class AddPedidosView(TemplateView):
             mensajes = {'enviado': False, 'resultado': form.errors}
 
         context = {
-            'title': title,
-            'form': form
-        }
+            'form': form,
+            'mensajes': mensajes,
+            }
         return render(request, self.template_name, context)
     
 class AddPedidosPasoDosView(TemplateView):
     template_name = 'agregar_pedido_paso_dos.html'
 
     def get(self, request, *args, **kwargs):
-        title = 'Segundo paso'    
         last_pedido = Pedidos.objects.filter(idUsuario=request.user).latest('id')
-        detalle_pedido = Detalles_Pedido.objects.filter(idPedidos=last_pedido)
         context ={
-            'title': title,
+            'title': 'Segundo paso',
             'last_pedido': last_pedido,
             'form': FormularioDetalle(),
-            'detalle_pedido' : detalle_pedido,
+            'detalle_pedido' : Detalles_Pedido.objects.filter(idPedidos=last_pedido),
         }
         return render(request,self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         form = FormularioDetalle(request.POST)
-        title = 'Segundo paso'
         if form.is_valid():
-            cantidad = form.cleaned_data['cantidad']
             producto = form.cleaned_data.get('idProductos')
-            precio =  Productos.objects.get(nombre=producto).precio
-            idPedido = Pedidos.objects.filter(idUsuario=request.user).latest('id')
             registro = Detalles_Pedido(
-                cantidad = cantidad,
-                idPedidos = idPedido,
+                cantidad = form.cleaned_data['cantidad'],
+                idPedidos = Pedidos.objects.filter(idUsuario=request.user).latest('id'),
                 idProductos = form.cleaned_data['idProductos'],
-                precio = precio,
+                precio = Productos.objects.get(nombre=producto).precio,
             )
             registro.save()
             mensajes = {'enviado': True, 'resultado': 'Has agregado un nuevo elemento al pedido exitosamente'}
@@ -343,7 +306,6 @@ class AddPedidosPasoDosView(TemplateView):
             mensajes = {'enviado': False, 'resultado': form.errors}
 
         context = {
-            'title': title,
             'form': form
         }
         return render(request, self.template_name, context)
