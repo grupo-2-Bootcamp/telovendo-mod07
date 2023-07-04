@@ -2,7 +2,7 @@
 
 {% block content %}
 
-Este es el paso dos para la orden {{last_pedido}}
+Este es el paso dos para la orden
 
 <!-- Aquí va el formulario para agregar productos al detalle (el modelo Detalles_Pedidos) -->
 
@@ -14,24 +14,11 @@ Este es el paso dos para la orden {{last_pedido}}
 
 <!-- Aqui va el listado de productos en la orden-->
 
-<h3>Información del pedido</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Nombre del producto</th>
-            <th scope="col">Cantidad</th>
-            <th scope="col">Precio Unitario</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for detalle in detalle_pedido %}
-        <tr>
-            <td>{{ detalle.idProductos }}</td>
-            <td>{{ detalle.cantidad }}</td>
-            <td>$ {{ detalle.precio }} </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% include 'components/internal_pedido_detalle_part.html' %}
+
+
+{% if total_pedido != None %}
+    <h5 class="mt-3 mb-3">Total del pedido : ${{total_pedido}}</h5>
+{% endif%}
 
 {% endblock %}

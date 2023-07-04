@@ -248,7 +248,7 @@ class AddPedidosView(TemplateView):                                             
 
     def get(self, request, *args, **kwargs):
         context ={
-            'title': 'Crear nuevo pedido',
+            'title': 'Primer paso: Crear pedido',
             'form': FormularioPedidos(),
         }
         return render(request,self.template_name, context)
@@ -282,11 +282,14 @@ class AddPedidosPasoDosView(TemplateView):
     def get(self, request, *args, **kwargs):
         last_pedido = Pedidos.objects.filter(idUsuario=request.user).latest('id')
         context ={
-            'title': 'Segundo paso',
+            'title': 'Segundo paso: Agregar productos al pedido',
             'last_pedido': last_pedido,
             'form': FormularioDetalle(),
-            'detalle_pedido' : Detalles_Pedido.objects.filter(idPedidos=last_pedido),
+            'detalle_pedido': Detalles_Pedido.objects.filter(idPedidos=last_pedido).annotate(total=F('cantidad') * F('precio')),
+            'total_pedido': Detalles_Pedido.objects.filter(idPedidos=last_pedido).aggregate(total=Sum(F('cantidad') * F('precio')))['total'],
+            'mensajes' : request.session.get('mensajes', None),
         }
+        request.session.pop('mensajes', None)
         return render(request,self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -300,7 +303,7 @@ class AddPedidosPasoDosView(TemplateView):
                 precio = Productos.objects.get(nombre=producto).precio,
             )
             registro.save()
-            mensajes = {'enviado': True, 'resultado': 'Has agregado un nuevo elemento al pedido exitosamente'}
+            request.session['mensajes'] = {'enviado': True, 'resultado': f'Se ha agregado {producto} al pedido exitosamente'}
             return redirect('nuevo_pedido_paso_dos')
         else:
             mensajes = {'enviado': False, 'resultado': form.errors}

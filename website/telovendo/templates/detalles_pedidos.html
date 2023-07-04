@@ -97,29 +97,7 @@
     </tbody>
 </table>
 
-
-<h3>Información del pedido</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Nombre del producto</th>
-            <th scope="col">Cantidad</th>
-            <th scope="col">Precio Unitario</th>
-            <th scope="col">Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for detalle in detalle_pedido %}
-        <tr>
-            <td>{{ detalle.idProductos }}</td>
-            <td>{{ detalle.cantidad }}</td>
-            <td>$ {{ detalle.precio }}</td>
-            <td>$ {{ detalle.total }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
+{% include 'components/internal_pedido_detalle_part.html' %}
 
 
 {% endblock %}

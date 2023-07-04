@@ -260,7 +260,9 @@ class FormularioDetalle(forms.ModelForm):
                                             widget= forms.Select(attrs={
                                                 'class':'form-select'}),
                                             )
-    cantidad = forms.IntegerField           (label='Cantidad de articulos', required = True,)
+    cantidad = forms.IntegerField           (label='Cantidad de articulos', required = True,
+                                             widget= forms.TextInput(attrs={
+                                                'class':'form-control'}))
 
     class Meta:
         model = Detalles_Pedido
