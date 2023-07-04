@@ -232,7 +232,7 @@ class FormularioEditarProductos(forms.ModelForm):
         fields = ['nombre', 'descripcion', 'stock', 'precio']
 
 class FormularioPedidos(forms.ModelForm):
-
+    
     idEmpresa = forms.ModelChoiceField      (label='Empresa', empty_label=('Seleccione una empresa'), queryset=Empresas.objects.all(), required=True,
                                             widget= forms.Select(attrs={
                                                 'class':'form-select'}),
@@ -254,6 +254,7 @@ class FormularioPedidos(forms.ModelForm):
         model = Pedidos
         fields = ['idEmpresa', 'idDireccion', 'instrucciones_entrega', 'idMetodoPago']
 
+
 class FormularioDetalle(forms.ModelForm):
 
     idProductos = forms.ModelChoiceField    (label='Producto', empty_label=('Seleccione un producto'), queryset=Productos.objects.filter(stock__gt=0), required=True,
@@ -261,9 +262,20 @@ class FormularioDetalle(forms.ModelForm):
                                                 'class':'form-select'}),
                                             )
     cantidad = forms.IntegerField           (label='Cantidad de articulos', required = True,
-                                             widget= forms.TextInput(attrs={
+                                            widget= forms.TextInput(attrs={
                                                 'class':'form-control'}))
 
     class Meta:
         model = Detalles_Pedido
         fields = ['idProductos', 'cantidad']
+
+class FormularioSeleccionaEmpresa(forms.ModelForm):
+
+    idEmpresa = forms.ModelChoiceField      (label='Empresa', empty_label=('Seleccione una empresa'), queryset=Empresas.objects.all(), required=True,
+                                            widget= forms.Select(attrs={
+                                                'class':'form-select'}),
+                                            )
+    
+    class Meta:
+        model = Empresas
+        fields = ['idEmpresa']

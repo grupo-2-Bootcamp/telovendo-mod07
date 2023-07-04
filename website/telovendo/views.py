@@ -5,8 +5,8 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView, DeleteView
 from django.db.models import F, Sum
-from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado,FormularioProductos, FormularioEditarProductos, FormularioPedidos, FormularioDetalle
-from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Estado_Pedido, Productos
+from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado,FormularioProductos, FormularioEditarProductos, FormularioPedidos, FormularioDetalle, FormularioSeleccionaEmpresa
+from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Estado_Pedido, Productos, MetodoPago
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.contrib import messages
@@ -243,14 +243,41 @@ class ProductoDeleteView(DeleteView):                                           
         return reverse('productos')
     
 
-class AddPedidosView(TemplateView):                                             # Agrega pedidos
+class AddPedidosPasoUnoView(TemplateView):                                         # Agrega pedidos
+    template_name  = 'agregar_pedido_paso_uno.html'
+    
+    def get(self, request, *args, **kwargs):
+        context = {
+            'title': 'Primer paso: Crear pedido',
+            'form': FormularioSeleccionaEmpresa()
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        idEmpresa = request.POST.get('idEmpresa')
+        request.session['idEmpresa'] = idEmpresa
+        request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha seleccionado una empresa, ahora hay que completar algunos datos'}
+        return redirect('nuevo_pedido_paso_dos')
+
+class AddPedidosPasoDosView(TemplateView):                                             # Agrega pedidos
     template_name = 'agregar_pedido_paso_dos.html'
 
     def get(self, request, *args, **kwargs):
+        mensajes = request.session.get('mensajes', None)
+        empresa = request.session.get('idEmpresa', None)
+        idempresa = Empresas.objects.get(id=empresa)
+        direcciones = Direcciones.objects.filter(idEmpresa=empresa)
+        metodospago = MetodoPago.objects.all().order_by('id')
         context ={
             'title': 'Primer paso: Crear pedido',
             'form': FormularioPedidos(),
+            'mensajes': mensajes,
+            'empresa': empresa,
+            'buscaempresa': idempresa,
+            'direcciones': direcciones,
+            'metodospago': metodospago,
         }
+        request.session.pop('mensajes', None)
         return render(request,self.template_name, context)
     
     def post(self, request, *args, **kwargs):
@@ -266,7 +293,7 @@ class AddPedidosView(TemplateView):                                             
             )
             registro.save()
             request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha creado el pedido exitosamente, ahora puedes llenar el pedido con los productos de la plataforma'}
-            return redirect('nuevo_pedido_paso_dos')
+            return redirect('nuevo_pedido_paso_tres')
         else:
             mensajes = {'enviado': False, 'resultado': form.errors}
 
@@ -276,7 +303,7 @@ class AddPedidosView(TemplateView):                                             
             }
         return render(request, self.template_name, context)
     
-class AddPedidosPasoDosView(TemplateView):
+class AddPedidosPasoTresView(TemplateView):
     template_name = 'agregar_pedido_paso_tres.html'
 
     def get(self, request, *args, **kwargs):
@@ -290,6 +317,7 @@ class AddPedidosPasoDosView(TemplateView):
             'mensajes' : request.session.get('mensajes', None),
         }
         request.session.pop('mensajes', None)
+        request.session.pop('idEmpresa', None)
         return render(request,self.template_name, context)
 
     def post(self, request, *args, **kwargs):

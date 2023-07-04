@@ -1,0 +1,12 @@
+{% extends "components/base_internal_part.html" %}
+
+{% block content %}
+
+<p>Para empezar el proceso, seleccione una empresa y presione continuar</p>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary mt-3">Continuar</button>
+</form>
+
+{% endblock %}
