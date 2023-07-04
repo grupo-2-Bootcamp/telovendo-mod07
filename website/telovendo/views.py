@@ -265,7 +265,7 @@ class AddPedidosView(TemplateView):                                             
                 idMetodoPago = form.cleaned_data['idMetodoPago'],
             )
             registro.save()
-            request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha creado el producto exitosamente'}
+            request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha creado el pedido exitosamente, ahora puedes llenar el pedido con los productos de la plataforma'}
             return redirect('nuevo_pedido_paso_dos')
         else:
             mensajes = {'enviado': False, 'resultado': form.errors}

@@ -98,7 +98,7 @@ class Pedidos(models.Model):                # Modelo de pedidos
 
 class Detalles_Pedido(models.Model):        # Modelo de detalle de pedido
     idProductos = models.ForeignKey(Productos, on_delete=models.DO_NOTHING, null=False, blank=False)
-    idPedidos = models.ForeignKey(Pedidos, on_delete=models.DO_NOTHING, null=False, blank=False)
+    idPedidos = models.ForeignKey(Pedidos, on_delete=models.CASCADE, null=False, blank=False)
     cantidad = models.IntegerField(null=False, blank=False)
     precio = models.IntegerField(null=False, blank=False)
 
