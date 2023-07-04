@@ -12,7 +12,7 @@
                 <th scope="col"><i class="fa-solid fa-user"></i> Creado por</th>
                 <th scope="col"><i class="fa-regular fa-calendar-days"></i> Fecha de creación</th>
                 <th scope="col"><i class="fa-solid fa-hand-holding-dollar"></i> Medio de pago</th>
-                <th scope="col"><i class="fa-solid fa-dollar-sign"></i>Total</th>
+                <!--<th scope="col"><i class="fa-solid fa-dollar-sign"></i>Total</th>-->
                 <th scope="col">Opciones</th>
             </tr>
         </thead>
@@ -53,7 +53,7 @@
                         <p class="btn btn-success"><i class="fa-solid fa-globe"></i> {{ pedido.idMetodoPago }}</p>
                     {% endif %}
                 </td>
-                <td>$ {{ pedido.total_pedido }}</td>
+                <!--<td>$ {{ pedido.total_pedido }}</td>-->
                 <td><a href="{% url 'detalle_pedido' idpedido=pedido.id %}" class="btn btn-primary">Ver detalle</a></td>
             </tr>
         {% endfor %}

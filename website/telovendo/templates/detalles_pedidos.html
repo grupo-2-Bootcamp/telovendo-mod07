@@ -11,7 +11,7 @@
             <th scope="col"><i class="fa-solid fa-bullseye"></i>  Estado</th>
             <th scope="col"><i class="fa-regular fa-calendar-days"></i> Fecha de creación</th>
             <th scope="col"><i class="fa-solid fa-hand-holding-dollar"></i> Medio de pago</th>
-            <th scope="col"><i class="fa-solid fa-dollar-sign"></i>Total</th>
+            <th scope="col"><i class="fa-solid fa-dollar-sign"></i>Total del pedido</th>
         </tr>
     </thead>
     <tbody>
@@ -53,7 +53,7 @@
                     <p class="btn btn-success"><i class="fa-solid fa-globe"></i> {{ pedido.idMetodoPago }}</p>
                 {% endif %}
             </td>
-            <td>$ {{ pedido.total_pedido }}</td>
+            <td>$ {{total_pedido}}</td>
         </tr>
     </tbody>
 </table>
@@ -97,6 +97,7 @@
     </tbody>
 </table>
 
+
 <h3>Información del pedido</h3>
 <table class="table">
     <thead>
@@ -104,6 +105,7 @@
             <th scope="col">Nombre del producto</th>
             <th scope="col">Cantidad</th>
             <th scope="col">Precio Unitario</th>
+            <th scope="col">Subtotal</th>
         </tr>
     </thead>
     <tbody>
@@ -111,7 +113,8 @@
         <tr>
             <td>{{ detalle.idProductos }}</td>
             <td>{{ detalle.cantidad }}</td>
-            <td>{{ detalle.precio }}</td>
+            <td>$ {{ detalle.precio }}</td>
+            <td>$ {{ detalle.total }}</td>
         </tr>
         {% endfor %}
     </tbody>

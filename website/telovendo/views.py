@@ -4,7 +4,8 @@ import string
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView, DeleteView
-from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado,FormularioProductos, FormularioEditarProductos, FormularioPedidos
+from django.db.models import F, Sum
+from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado,FormularioProductos, FormularioEditarProductos, FormularioPedidos, FormularioDetalle
 from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Estado_Pedido, Productos
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
@@ -73,7 +74,8 @@ class DetallesPedidosView(TemplateView):            # Vista de pagina detalles p
         empresa = Empresas.objects.get(id=pedido.idEmpresa_id)
         usuario = CustomUser.objects.get(id=pedido.idUsuario_id)
         direccion = Direcciones.objects.get(id=pedido.idDireccion_id)
-        detalle_pedido = Detalles_Pedido.objects.filter(idPedidos=idpedido)
+        detalle_pedido = Detalles_Pedido.objects.filter(idPedidos=idpedido).annotate(total=F('cantidad') * F('precio'))
+        total_pedido = Detalles_Pedido.objects.filter(idPedidos=idpedido).aggregate(total=Sum(F('cantidad') * F('precio')))['total']
         context ={
             'title': f'Detalle de orden {pedido}',
             'pedido': pedido,
@@ -81,6 +83,7 @@ class DetallesPedidosView(TemplateView):            # Vista de pagina detalles p
             'direccion': direccion,
             'detalle_pedido': detalle_pedido,
             'usuario': usuario,
+            'total_pedido': total_pedido,
             }
         return render(request, self.template_name, context)
 
@@ -300,7 +303,6 @@ class AddPedidosView(TemplateView):
 
         context = {
             'title': title,
-            'mensajes': mensajes,
             'form': form
         }
         return render(request, self.template_name, context)
@@ -311,8 +313,38 @@ class AddPedidosPasoDosView(TemplateView):
     def get(self, request, *args, **kwargs):
         title = 'Segundo paso'    
         last_pedido = Pedidos.objects.filter(idUsuario=request.user).latest('id')
+        detalle_pedido = Detalles_Pedido.objects.filter(idPedidos=last_pedido)
         context ={
             'title': title,
             'last_pedido': last_pedido,
+            'form': FormularioDetalle(),
+            'detalle_pedido' : detalle_pedido,
         }
         return render(request,self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = FormularioDetalle(request.POST)
+        title = 'Segundo paso'
+        if form.is_valid():
+            cantidad = form.cleaned_data['cantidad']
+            producto = form.cleaned_data.get('idProductos')
+            precio =  Productos.objects.get(nombre=producto).precio
+            idPedido = Pedidos.objects.filter(idUsuario=request.user).latest('id')
+            registro = Detalles_Pedido(
+                cantidad = cantidad,
+                idPedidos = idPedido,
+                idProductos = form.cleaned_data['idProductos'],
+                precio = precio,
+            )
+            registro.save()
+            mensajes = {'enviado': True, 'resultado': 'Has agregado un nuevo elemento al pedido exitosamente'}
+            return redirect('nuevo_pedido_paso_dos')
+        else:
+            mensajes = {'enviado': False, 'resultado': form.errors}
+
+        context = {
+            'title': title,
+            'form': form
+        }
+        return render(request, self.template_name, context)
+    

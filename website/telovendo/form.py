@@ -256,7 +256,7 @@ class FormularioPedidos(forms.ModelForm):
 
 class FormularioDetalle(forms.ModelForm):
 
-    idProductos = forms.ModelChoiceField    (label='Producto', empty_label=('Seleccione un producto'), queryset=Productos.objects.all(), required=True,
+    idProductos = forms.ModelChoiceField    (label='Producto', empty_label=('Seleccione un producto'), queryset=Productos.objects.filter(stock__gt=0), required=True,
                                             widget= forms.Select(attrs={
                                                 'class':'form-select'}),
                                             )

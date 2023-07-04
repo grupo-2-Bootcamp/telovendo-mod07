@@ -6,9 +6,32 @@ Este es el paso dos para la orden {{last_pedido}}
 
 <!-- Aquí va el formulario para agregar productos al detalle (el modelo Detalles_Pedidos) -->
 
-
-
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary mt-3">Continua con la creación del pedido</button>
+</form>
 
 <!-- Aqui va el listado de productos en la orden-->
+
+<h3>Información del pedido</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Nombre del producto</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Precio Unitario</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for detalle in detalle_pedido %}
+        <tr>
+            <td>{{ detalle.idProductos }}</td>
+            <td>{{ detalle.cantidad }}</td>
+            <td>$ {{ detalle.precio }} </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}
