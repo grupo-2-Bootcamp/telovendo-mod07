@@ -47,8 +47,10 @@ class LoginView(TemplateView):              # Vista de acceso al sistema interno
 class InternoView(TemplateView):            # Vista de pagina principal interna
     template_name = 'internal.html'
     def get(self, request, *args, **kwargs):
-        title = 'Bienvenido al sistema interno de TeLoVendo'
-        return render(request, self.template_name, {'title': title,})
+        context = {
+            'title': 'Bienvenido al sistema interno de TeLoVendo',
+        }
+        return render(request, self.template_name, context)
     
 
 class PedidosView(TemplateView):            # Vista de pedidos
