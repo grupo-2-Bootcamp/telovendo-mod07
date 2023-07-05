@@ -2,15 +2,24 @@
 
 {% block content %}
 
-Este es el paso dos para la orden
+
 
 <!-- Aquí va el formulario para agregar productos al detalle (el modelo Detalles_Pedidos) -->
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary mt-3">Continua con la creación del pedido</button>
-</form>
+<div class="row">
+    <div class="col-4">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary mt-3">Agregar al pedido</button> 
+        </form>
+    </div>
+    <div class="col-2">
+        Aquí puede agregar los productos al pedido. Para finalizar, solo presione el botón de cerrar el pedido.
+        <a href="{% url 'cierre_pedidos' %}" class="btn btn-primary mt-3">Cerrar el pedido</a> 
+    </div>
+</div>
+
 
 <!-- Aqui va el listado de productos en la orden-->
 

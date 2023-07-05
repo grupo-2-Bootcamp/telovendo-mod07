@@ -13,6 +13,7 @@
     <p>
         <label for="id_idDireccion">Dirección:</label>
         <select name="idDireccion" class="form-select" required id="id_idDireccion">
+            <option value="" selected>Seleccione una dirección</option>
         {% for direccion in direcciones %}
             <option value="{{direccion.id}}">{{direccion.direccion}} {{direccion.numero}}, {{direccion.Comuna}}</option>
         {% endfor %}    

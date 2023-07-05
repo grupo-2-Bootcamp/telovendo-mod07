@@ -85,14 +85,19 @@
         <tr>
             <th scope="col">Empresa</th>
             <th scope="col">RUT</th>
-            <th scope="col">Usuario que genero el pedido</th>
+            <th scope="col">Usuario que genero el pedido, y área</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>{{ empresa.nombre_empresa }}</td>
             <td>{{ empresa.rut }}</td>
-            <td>{{ usuario.first_name }} {{ usuario.last_name }} ({{ usuario }})</td>
+            <td>{{ usuario.first_name }} {{ usuario.last_name }} ({{ usuario }}) - 
+                {% if usuario.groups.first.id == 1%}
+                    Cliente
+                {% elif usuario.groups.first.id == 2 %}
+                    Área interna TeLoVendo
+                {% endif %}
         </tr>
     </tbody>
 </table>

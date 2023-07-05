@@ -259,6 +259,7 @@ class AddPedidosPasoUnoView(TemplateView):                                      
             'usuario': request.user.groups.first().id,
             'empresa': empresas
         }
+        request.session.pop('idEmpresa', None)
         return render(request, self.template_name, context)
     
     def post(self, request, *args, **kwargs):
@@ -285,7 +286,6 @@ class AddPedidosPasoDosView(TemplateView):                                      
             'direcciones': direcciones,
             'metodospago': metodospago,
         }
-        request.session.pop('mensajes', None)
         return render(request,self.template_name, context)
     
     def post(self, request, *args, **kwargs):
@@ -340,7 +340,7 @@ class AddPedidosPasoTresView(TemplateView):
             )
             registro.save()
             request.session['mensajes'] = {'enviado': True, 'resultado': f'Se ha agregado {producto} al pedido exitosamente'}
-            return redirect('nuevo_pedido_paso_dos')
+            return redirect('nuevo_pedido_paso_tres')
         else:
             mensajes = {'enviado': False, 'resultado': form.errors}
 
@@ -348,4 +348,16 @@ class AddPedidosPasoTresView(TemplateView):
             'form': form
         }
         return render(request, self.template_name, context)
-    
+
+class CierrePedidoView(TemplateView):
+    template_name = 'cierre_pedido.html'
+
+    def get(self, request, *args, **kwargs):
+        request.session.pop('mensajes', None)
+        request.session.pop('idEmpresa', None)
+
+        context = {
+            'title': '🎉 El pedido está finalizado',
+        }
+
+        return render(request, self.template_name, context)
