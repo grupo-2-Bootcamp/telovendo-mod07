@@ -10,6 +10,8 @@ from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalle
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+
 
 # Genera contraseñas aleatorias
 def generate_random_password():
@@ -45,8 +47,12 @@ class LoginView(TemplateView):                                      # Vista de a
 class InternoView(TemplateView):                                    # Vista de pagina principal interna
     template_name = 'internal.html'
     def get(self, request, *args, **kwargs):
+        primer_nombre = request.user.first_name
+        apellido = request.user.last_name
         context = {
             'title': 'Bienvenido al sistema interno de TeLoVendo',
+            'primer_nombre': primer_nombre,
+            'apellido': apellido
         }
         return render(request, self.template_name, context)
     
@@ -162,9 +168,10 @@ class RegistroView(TemplateView):                                   # Crea usuar
         }
         return render(request, self.template_name, context)
 
-class ProductosView(TemplateView):                                  # Lista los productos
-    template_name = 'productos.html'
 
+class ProductosView(TemplateView, PermissionRequiredMixin, LoginRequiredMixin):                                  # Lista los productos
+    template_name = 'productos.html'
+    permission_required = "telovendo.permiso_trabajadores"
     def get(self, request, *args, **kwargs):
         context = {
             'title': 'Gestión de Productos',
@@ -174,8 +181,9 @@ class ProductosView(TemplateView):                                  # Lista los 
         request.session.pop('mensajes', None)
         return render(request, self.template_name, context)
 
-class ProductoCreateView(TemplateView): 
+class ProductoCreateView(TemplateView, PermissionRequiredMixin): 
     template_name = 'agregar_producto.html'
+    permission_required = "telovendo.permiso_trabajadores"
     def get(self, request, *args, **kwargs):
 
         context = {
@@ -206,9 +214,9 @@ class ProductoCreateView(TemplateView):
         return render(request, self.template_name, context)
 
 
-class ProductoEditView(TemplateView):                                           # Lista los productos
+class ProductoEditView(TemplateView, PermissionRequiredMixin):                                           # Lista los productos
     template_name = 'editar_producto.html'
-
+    permission_required = "telovendo.permiso_trabajadores"
     def get(self, request, *args, **kwargs):
         id_producto = kwargs['id_producto']
         try:
@@ -240,8 +248,9 @@ class ProductoEditView(TemplateView):                                           
         }
         return render(request, self.template_name, context)
     
-class ProductoDeleteView(DeleteView):                                           # Elimina productos
+class ProductoDeleteView(DeleteView, PermissionRequiredMixin):                                           # Elimina productos
     model = Productos
+    permission_required = "telovendo.permiso_trabajadores"
     template_name = 'eliminar_producto.html'
     
     def get_success_url(self):
@@ -250,7 +259,6 @@ class ProductoDeleteView(DeleteView):                                           
 
 class AddPedidosPasoUnoView(TemplateView):                                         # Agrega pedidos
     template_name  = 'agregar_pedido_paso_uno.html'
-    
     def get(self, request, *args, **kwargs):
         
         if request.user.groups.first().id == 1:
