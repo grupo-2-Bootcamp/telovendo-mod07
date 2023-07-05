@@ -27,7 +27,9 @@ class LoginView(TemplateView):                                      # Vista de a
     def get(self, request, *args, **kwargs):
         formulario = FormularioLogin()
         title = 'Acceso al sitio interno'
-        return render(request, self.template_name, {'formulario': formulario, 'title': title})
+        mensajes = request.session.get('mensajes', None)
+        request.session.pop('mensajes', None)
+        return render(request, self.template_name, {'formulario': formulario, 'title': title, 'mensajes': mensajes,})
 
     def post(self, request, *args, **kwargs):
         title = 'Acceso al sitio interno'
@@ -142,7 +144,8 @@ class RegistroView(TemplateView):                                   # Crea usuar
             group = form.cleaned_data['group']
             if group:
                 group.user_set.add(user)
-            mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo usuario exitosamente'}
+            # mensajes = {'enviado': True, 'resultado': 'Has creado un nuevo usuario exitosamente'}
+            request.session['mensajes'] = {'enviado': True, 'resultado': 'El usuario ha sido creado, tus datos de identificación se enviarán por email'}
             correo_destino = form.cleaned_data['email']
             mensaje = f'''
                 Bienvenido a Telovendo.
@@ -157,9 +160,10 @@ class RegistroView(TemplateView):                                   # Crea usuar
                 [correo_destino],  # Enviar el correo al destinatario ingresado por el usuario
                 fail_silently=False
             )
-            messages.success(request, mensajes['resultado'])  # Almacenar el mensaje de éxito
+            # messages.success(request, mensajes['resultado'])  # Almacenar el mensaje de éxito
+            
+            
             return redirect('login')  # Redirigir al formulario de inicio de sesión
-
         mensajes = {'enviado': False, 'resultado': form.errors}
         context = {
             'formulario': form,
