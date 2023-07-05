@@ -173,7 +173,7 @@ class RegistroView(TemplateView):                                   # Crea usuar
         return render(request, self.template_name, context)
 
 
-class ProductosView(TemplateView, PermissionRequiredMixin, LoginRequiredMixin):                                  # Lista los productos
+class ProductosView(PermissionRequiredMixin, TemplateView):                                  # Lista los productos
     template_name = 'productos.html'
     permission_required = "telovendo.permiso_trabajadores"
     def get(self, request, *args, **kwargs):
@@ -185,7 +185,7 @@ class ProductosView(TemplateView, PermissionRequiredMixin, LoginRequiredMixin): 
         request.session.pop('mensajes', None)
         return render(request, self.template_name, context)
 
-class ProductoCreateView(TemplateView, PermissionRequiredMixin): 
+class ProductoCreateView(PermissionRequiredMixin, TemplateView): 
     template_name = 'agregar_producto.html'
     permission_required = "telovendo.permiso_trabajadores"
     def get(self, request, *args, **kwargs):
@@ -218,7 +218,7 @@ class ProductoCreateView(TemplateView, PermissionRequiredMixin):
         return render(request, self.template_name, context)
 
 
-class ProductoEditView(TemplateView, PermissionRequiredMixin):                                           # Lista los productos
+class ProductoEditView(PermissionRequiredMixin, TemplateView):                                           # Lista los productos
     template_name = 'editar_producto.html'
     permission_required = "telovendo.permiso_trabajadores"
     def get(self, request, *args, **kwargs):
@@ -252,7 +252,7 @@ class ProductoEditView(TemplateView, PermissionRequiredMixin):                  
         }
         return render(request, self.template_name, context)
     
-class ProductoDeleteView(DeleteView, PermissionRequiredMixin):                                           # Elimina productos
+class ProductoDeleteView(PermissionRequiredMixin, DeleteView):                                           # Elimina productos
     model = Productos
     permission_required = "telovendo.permiso_trabajadores"
     template_name = 'eliminar_producto.html'
