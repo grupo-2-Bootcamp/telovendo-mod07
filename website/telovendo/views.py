@@ -51,13 +51,17 @@ class InternoView(TemplateView):                                    # Vista de p
         return render(request, self.template_name, context)
     
 
-class PedidosView(TemplateView):                                    # Vista de pedidos
+class PedidosView(TemplateView):                                    # Vista de un pedido
     template_name = 'pedidos.html'
-
     def get(self, request, *args, **kwargs):
+        request.session.pop('mensajes', None)
+        if request.user.groups.first().id == 1:
+            pedidos = Pedidos.objects.filter(idEmpresa_id=request.user.idEmpresa_id).order_by('id')
+        else:
+            pedidos = Pedidos.objects.all()
         context ={
             'title': 'Gestión de pedidos',
-            'pedidos': Pedidos.objects.all().order_by('id'),
+            'pedidos': pedidos
         }
         return render(request,self.template_name, context)
 

@@ -53,7 +53,7 @@
                         <p class="btn btn-success"><i class="fa-solid fa-globe"></i> {{ pedido.idMetodoPago }}</p>
                     {% endif %}
                 </td>
-                <!--<td>$ {{ pedido.total_pedido }}</td>-->
+
                 <td><a href="{% url 'detalle_pedido' idpedido=pedido.id %}" class="btn btn-primary">Ver detalle</a></td>
             </tr>
         {% endfor %}
