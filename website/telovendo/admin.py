@@ -1,5 +1,5 @@
 from django.contrib import admin
-from telovendo.models import Estado_Pedido, MetodoPago, Empresas, Productos, Pedidos, Direcciones, CustomUser, Detalles_Pedido
+from telovendo.models import Estado_Pedido, MetodoPago, Empresas, Productos, Pedidos,Categoria, Direcciones, CustomUser, Detalles_Pedido
 from telovendo.form import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth.admin import UserAdmin
 
@@ -56,11 +56,11 @@ admin.site.register(Empresas, Empresas_Admin)
 
 
 class Productos_Admin(admin.ModelAdmin):            # Modelo de Productos
-    list_display = ['id', 'nombre', 'descripcion', 'stock', 'precio', 'urlfoto']
+    list_display = ['id', 'nombre', 'descripcion', 'stock', 'precio']
     list_filter = ['nombre', 'precio']
     search_fields = ['nombre']
     ordering = ['id']
-    fields = ['nombre', 'descripcion', 'stock', 'precio', 'urlfoto']
+    fields = ['nombre', 'descripcion', 'stock', 'precio']
 
 admin.site.register(Productos, Productos_Admin)
 
@@ -93,3 +93,12 @@ class DetallePedidos_Admin(admin.ModelAdmin):       # Modelo de detalles de pedi
     fields = ['idPedidos', 'idProductos', 'cantidad', 'precio' ]
 
 admin.site.register(Detalles_Pedido, DetallePedidos_Admin)
+
+
+class Categorias_Admin(admin.ModelAdmin):
+    list_display = ['id', 'nombre']
+    search_fields = ['nombre']
+    ordering = ['id']
+    fields = ['nombre']
+
+admin.site.register(Categoria, Categorias_Admin)

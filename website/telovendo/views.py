@@ -231,11 +231,16 @@ class ProductoCreateView(PermissionRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         form = FormularioProductos(request.POST, request.FILES)
         if form.is_valid():
+            if 'image' in request.FILES:
+                image = request.FILES.get('image')
+            else:
+                image = form.ruta_fotoPerfil()
             registro = Productos(
                 nombre= form.cleaned_data['nombre'],
                 descripcion= form.cleaned_data['descripcion'],
                 precio= form.cleaned_data['precio'],
                 stock= form.cleaned_data['stock'],
+                image = image
             )
             registro.save()
             request.session['mensajes'] = {'enviado': True, 'resultado': 'Has creado el producto exitosamente'}

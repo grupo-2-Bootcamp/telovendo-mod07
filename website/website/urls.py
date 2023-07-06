@@ -26,6 +26,8 @@ from mainsite.views import Index
 # Vistas de la app principal
 from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, DetallesPedidosView, UpdateEstadoPedidoView, ProductosView, ProductoEditView, ProductoCreateView, ProductoDeleteView, AddPedidosPasoUnoView, AddPedidosPasoDosView, AddPedidosPasoTresView, CierrePedidoView
 
+# from django.conf import settings
+# from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -46,3 +48,8 @@ urlpatterns = [
     path('internal/productos/<int:pk>/eliminar/', login_required(ProductoDeleteView.as_view()), name='eliminar_producto'),
     path('internal/pedidos/cierre', login_required(CierrePedidoView.as_view()), name='cierre_pedidos')
 ]
+
+
+# Configuración para servir archivos de medios en desarrollo
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

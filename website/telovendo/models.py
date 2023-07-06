@@ -11,7 +11,8 @@ class Productos(models.Model):              # Modelo de productos
     descripcion = models.CharField(max_length=45, null=False, blank=False)
     stock = models.IntegerField(null=False, blank=False)
     precio = models.IntegerField(null=False, blank=False)
-    urlfoto = models.CharField(max_length=45, null=True, blank=True)
+    image = models.ImageField(upload_to='product_images', default='default_image.png')
+    categoria = models.ForeignKey('Categoria', default=1, on_delete=models.DO_NOTHING, null=False, blank = False)
     
     def __str__(self):
         return self.nombre
@@ -20,6 +21,15 @@ class Productos(models.Model):              # Modelo de productos
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
 
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=45, null=False, blank=False)
+
+    def __str__(self):
+        return self.nombre
+    
+    class Meta:
+        verbose_name = 'Categoría del Producto'
+        verbose_name_plural = "Categorías de Productos"
 
 class Estado_Pedido(models.Model):          # Modelo de estados de pedidos
     estado = models.CharField(max_length=45, null=False, blank=False)
