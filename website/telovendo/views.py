@@ -7,10 +7,9 @@ from django.views.generic import TemplateView, DeleteView
 from django.db.models import F, Sum
 from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado,FormularioProductos, FormularioEditarProductos, FormularioPedidos, FormularioDetalle, FormularioSeleccionaEmpresa
 from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Estado_Pedido, Productos, MetodoPago
-from django.contrib.auth.models import Group, User
 from django.core.mail import send_mail
-from django.contrib import messages
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.files.base import ContentFile
 
 
 # Genera contraseñas aleatorias
@@ -235,6 +234,7 @@ class ProductoCreateView(PermissionRequiredMixin, TemplateView):
                 image = request.FILES.get('image')
             else:
                 image = form.ruta_fotoPerfil()
+
             registro = Productos(
                 nombre= form.cleaned_data['nombre'],
                 descripcion= form.cleaned_data['descripcion'],
@@ -255,9 +255,10 @@ class ProductoCreateView(PermissionRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-class ProductoEditView(PermissionRequiredMixin, TemplateView):                                           # Lista los productos
+class ProductoEditView(PermissionRequiredMixin, TemplateView):
     template_name = 'editar_producto.html'
     permission_required = "telovendo.permiso_trabajadores"
+
     def get(self, request, *args, **kwargs):
         id_producto = kwargs['id_producto']
         try:
@@ -274,20 +275,23 @@ class ProductoEditView(PermissionRequiredMixin, TemplateView):                  
 
     def post(self, request, *args, **kwargs):
         id_producto = kwargs['id_producto']
-        producto = Productos.objects.get(id=id_producto)
-        form = FormularioEditarProductos(request.POST, instance=producto)
+        try:
+            producto = Productos.objects.get(id=id_producto)
+        except Productos.DoesNotExist:
+            return render(request, 'elemento_no_existe.html')
+        form = FormularioEditarProductos(request.POST, request.FILES, instance=producto)
         if form.is_valid():
             form.save()
+            # Opcional: Puedes realizar acciones adicionales después de guardar la actualización
             request.session['mensajes'] = {'enviado': True, 'resultado': 'Has actualizado el producto exitosamente'}
-            return redirect('productos') 
+            return redirect('productos')
         else:
-            mensajes = {'enviado': False, 'resultado': form.errors}
-        context = {
-            'form': form,
-            'id_producto': id_producto,
-            'mensajes': mensajes
-        }
-        return render(request, self.template_name, context)
+            context = {
+                'title': 'Editar producto',
+                'form': form,
+                'id_producto': id_producto,
+            }
+            return render(request, self.template_name, context)
     
 class ProductoDeleteView(PermissionRequiredMixin, DeleteView):                                           # Elimina productos
     model = Productos
