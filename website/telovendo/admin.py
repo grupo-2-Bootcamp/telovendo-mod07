@@ -56,11 +56,11 @@ admin.site.register(Empresas, Empresas_Admin)
 
 
 class Productos_Admin(admin.ModelAdmin):            # Modelo de Productos
-    list_display = ['id', 'nombre', 'descripcion', 'stock', 'precio']
+    list_display = ['id', 'nombre', 'descripcion', 'categoria', 'stock', 'precio']
     list_filter = ['nombre', 'precio']
     search_fields = ['nombre']
     ordering = ['id']
-    fields = ['nombre', 'descripcion', 'stock', 'precio']
+    fields = ['nombre', 'descripcion', 'categoria', 'stock', 'precio']
 
 admin.site.register(Productos, Productos_Admin)
 

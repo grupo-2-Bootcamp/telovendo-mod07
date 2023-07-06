@@ -1,0 +1,5 @@
+<div class="list-group">
+{% for element in categorias %}
+    <a href="{% url 'categoria' id_categoria=element.id %}" class="list-group-item"><i class="fa-solid fa-tag"></i> {{element.nombre}}</a>
+{% endfor %}
+</div>

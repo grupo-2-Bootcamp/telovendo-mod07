@@ -21,7 +21,7 @@ from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import login_required
 
 # Vistas de paginas principales
-from mainsite.views import Index
+from mainsite.views import Index, CatalogoIndex, CatalogoList
 
 # Vistas de la app principal
 from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, DetallesPedidosView, UpdateEstadoPedidoView, ProductosView, ProductoEditView, ProductoCreateView, ProductoDeleteView, AddPedidosPasoUnoView, AddPedidosPasoDosView, AddPedidosPasoTresView, CierrePedidoView
@@ -32,6 +32,8 @@ from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, D
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Index.as_view(), name='index'),
+    path('catalogo', CatalogoIndex.as_view(), name='catalogo'), 
+    path('catalogo/categoria/<int:id_categoria>', CatalogoList.as_view(), name='categoria'),
     path('registrarse', RegistroView.as_view(), name='registrarse'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
