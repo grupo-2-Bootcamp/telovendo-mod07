@@ -1,5 +1,5 @@
 {% extends "components/base_internal_part.html" %}
-
+{%load static%}
 {% block content %}
 
 <div class="content m-5">
@@ -8,6 +8,7 @@
         <thead>
             <tr>
                 <th scope="col"><i class="fa-solid fa-receipt"></i> N°</th>
+                <th scope="col"><i class="fa-solid fa-receipt"></i> Foto</th>
                 <th scope="col"><i class="fa-solid fa-image-portrait"></i> Nombre</th>
                 <th scope="col"><i class="fa-solid fa-file-signature"></i> Descripción</th>
                 <th scope="col"><i class="fa-solid fa-hashtag"></i> Stock</th>
@@ -20,10 +21,9 @@
             {% for producto in productos %}
             <tr>
                 <th scope="row">{{ producto.id }}</th>
+                <td><img src="{{ producto.image.url }}" alt="Foto de producto {{produto.nombre}}" width="50px"></td>
                 <td>{{ producto.nombre }}</td>
-                <td>
-                    {{producto.descripcion}}
-                </td>
+                <td>{{producto.descripcion}}</td>
                 <td>{{ producto.stock }}</td>
                 <td>{{ producto.precio }}</td>
                 <td>

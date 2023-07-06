@@ -1,7 +1,9 @@
+import os
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from telovendo.models import CustomUser, Empresas, Estado_Pedido, Pedidos, Productos, Direcciones, MetodoPago, Detalles_Pedido
-from django.contrib.auth.models import User, Group
+from telovendo.models import CustomUser, Empresas, Estado_Pedido, Pedidos,Categoria, Productos, Direcciones, MetodoPago, Detalles_Pedido
+from django.contrib.auth.models import Group
+from django.templatetags.static import static
 
 
 # Formulario de creación de usuarios solo para el panel de administración de Django
@@ -194,22 +196,27 @@ class FormularioProductos(forms.Form):
                                             'placeholder': 'Ingrese el precio del producto',
                                             'class':'form-control'}),
                                     )
-    # image = forms.ImageField(label='Foto del Producto', required=False)
-
-    # def clean_image(self):
-    #     image = self.cleaned_data.get('image')
-    #     if image:
-    #         max_size = 50 * 1024 * 1024  # Tamaño máximo en bytes (50 MB)
-    #         if image.size > max_size:
-    #             raise forms.ValidationError('El peso de la imagen no debe superar los 50 MB')
-    #     return image
-
-    # def ruta_fotoPerfil(self):
-    #     return '/profile_images/foto_perfil.png'
+    idCategoria = forms.ModelChoiceField(label='Categoría', empty_label=('Seleccione una categoría'),
+                                        queryset=Categoria.objects.all(), required=True, 
+                                        widget= forms.Select(attrs={
+                                            'class':'form-select'}),)
     
-    # class Meta(UserCreationForm.Meta):
-    #     model = Productos
-    #     fields = ('nombre', 'descripcion', 'stock', 'precio')
+    image = forms.ImageField(label='Foto del Producto', required=False)
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image:
+            max_size = 50 * 1024 * 1024  # Tamaño máximo en bytes (50 MB)
+            if image.size > max_size:
+                raise forms.ValidationError('El peso de la imagen no debe superar los 50 MB')
+        return image
+
+    def ruta_fotoPerfil(self):
+        return '/product_images/default_image.png'
+    
+    class Meta(UserCreationForm.Meta):
+        model = Productos
+        fields = ('nombre', 'descripcion', 'stock', 'precio', 'idCategoria', 'image')
     
 class FormularioEditarProductos(forms.ModelForm):
     nombre = forms.CharField    (label='Nombre del producto', required = False,
@@ -243,9 +250,17 @@ class FormularioEditarProductos(forms.ModelForm):
                                             'placeholder': 'Ingrese el precio del producto',
                                             'class':'form-control'}),
                                     )
+    
+    idCategoria = forms.ModelChoiceField(label='Categoría', empty_label=('Seleccione una categoría'),
+                                        queryset=Categoria.objects.all(), required=False, 
+                                        widget= forms.Select(attrs={
+                                            'class':'form-select'}),)
+    
+    image = forms.ImageField(label='Foto del Producto', required=False)
+
     class Meta:
         model = Productos
-        fields = ['nombre', 'descripcion', 'stock', 'precio']
+        fields = ['nombre', 'descripcion', 'stock', 'precio', 'idCategoria', 'image']
 
 class FormularioPedidos(forms.ModelForm):
     
