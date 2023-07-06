@@ -229,7 +229,7 @@ class ProductoEditView(PermissionRequiredMixin, TemplateView):                  
             return render(request, 'elemento_no_existe.html')
         form = FormularioEditarProductos(instance=producto)
         context = {
-            'title': '1/3 - Crear pedido',
+            'title': 'Editar producto',
             'form': form,
             'id_producto': id_producto,
         }
