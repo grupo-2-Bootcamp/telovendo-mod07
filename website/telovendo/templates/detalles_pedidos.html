@@ -29,7 +29,7 @@
                 {% elif pedido.idEstado_id == 5 %} <!-- 5: Cancelado -->
                     <p class="btn btn-secondary">{{ pedido.idEstado }}</p>
                 {% endif %}
-                {% if usuario.groups.first.id == 2 and pedido.idEstado_id  != 5 %}
+                {% if grupo_usuario_actual == 2 and pedido.idEstado_id  != 5 %}
                     <a href="/internal/pedidos/orden/{{ pedido.id }}/modifica/estado"><p class="btn btn-primary">Modificar estado</p></a>
                 {% endif %}
             </td>

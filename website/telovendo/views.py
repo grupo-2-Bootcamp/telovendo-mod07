@@ -7,7 +7,7 @@ from django.views.generic import TemplateView, DeleteView
 from django.db.models import F, Sum
 from telovendo.form import FormularioLogin, FormularioRegistro, FormularioUpdateEstado,FormularioProductos, FormularioEditarProductos, FormularioPedidos, FormularioDetalle, FormularioSeleccionaEmpresa
 from telovendo.models import Pedidos, CustomUser, Empresas, Direcciones, Detalles_Pedido, Estado_Pedido, Productos, MetodoPago
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
@@ -59,7 +59,7 @@ class InternoView(TemplateView):                                    # Vista de p
         return render(request, self.template_name, context)
     
 
-class PedidosView(TemplateView):                                    # Vista de un pedido
+class PedidosView(TemplateView):                                    # Vista de todos los pedidos
     template_name = 'pedidos.html'
     def get(self, request, *args, **kwargs):
         request.session.pop('mensajes', None)
@@ -74,7 +74,7 @@ class PedidosView(TemplateView):                                    # Vista de u
         return render(request,self.template_name, context)
 
 
-class DetallesPedidosView(TemplateView):                            # Listado de detalles de pedidos
+class DetallesPedidosView(TemplateView):                            # Listado de detalles de un pedido
     template_name = 'detalles_pedidos.html'
     def get(self, request, idpedido, *args, **kwargs):
         try:
@@ -88,6 +88,7 @@ class DetallesPedidosView(TemplateView):                            # Listado de
             'direccion': Direcciones.objects.get(id=pedido.idDireccion_id),
             'detalle_pedido': Detalles_Pedido.objects.filter(idPedidos=idpedido).annotate(total=F('cantidad') * F('precio')),
             'usuario': CustomUser.objects.get(id=pedido.idUsuario_id),
+            'grupo_usuario_actual': request.user.groups.first().id,
             'total_pedido': Detalles_Pedido.objects.filter(idPedidos=idpedido).aggregate(total=Sum(F('cantidad') * F('precio')))['total'],
             'mensajes' : request.session.get('mensajes', None),
             }
@@ -103,21 +104,52 @@ class UpdateEstadoPedidoView(TemplateView):                         # Actualiza 
             pedido = Pedidos.objects.get(id=idpedido)
         except Pedidos.DoesNotExist:
             return render(request, 'elemento_no_existe.html')
+        pedido = Pedidos.objects.get(id=idpedido)
+        email_cliente =  CustomUser.objects.get(id=pedido.idUsuario_id).email
+        grupo_cliente = CustomUser.objects.get(id=pedido.idUsuario_id).groups.first().id
         context = {
             'form': FormularioUpdateEstado(instance=pedido),
             'idpedido': idpedido,
-            'pedido': Pedidos.objects.get(id=idpedido),
+            'pedido': pedido,
             'title': f'Modificar el estado del pedido {idpedido}',
+            'email_cliente': email_cliente,
+            'grupo_cliente': grupo_cliente,
         }
+        
+        request.session['email_cliente'] = email_cliente
+        request.session['grupo_cliente'] = grupo_cliente
         return render(request, self.template_name, context)
 
     def post(self, request, idpedido, *args, **kwargs):             
         instance = get_object_or_404(Pedidos, id=self.kwargs['idpedido'])
         form = FormularioUpdateEstado(request.POST, instance=instance)
         reenvio = reverse('detalle_pedido', kwargs={'idpedido': idpedido})
+        pedido = self.kwargs['idpedido']
+        email_cliente = request.session['email_cliente']
+        grupo_cliente = request.session['grupo_cliente']
+        request.session.pop('email_cliente', None)
+        request.session.pop('grupo_cliente', None)
         if form.is_valid():
             form.save()
             request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha actualizado el estado del pedido'}
+            estado = Pedidos.objects.get(id=pedido).idEstado
+            if grupo_cliente == 1:
+                mensaje = f'''
+                    Cambio de estado de pedido.
+                    El estado del pedido {pedido} ha cambiado, y su nuevo estado es {estado}
+                    En caso de dudas, puede contactanos para revisar nuevamente su pedido.
+
+
+                    Muchas Gracias por su preferencia
+                '''
+                send_mail(
+                    f'[TeLoVendo] - Cambio de estado de pedido número {pedido}',
+                    mensaje,
+                    os.environ.get('EMAIL_HOST_USER'),  # Usar el correo configurado en settings.py
+                    [email_cliente],  # Enviar el correo al destinatario ingresado por el usuario
+                    fail_silently=False
+                )
+                request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha actualizado el estado del pedido y envíado un email al cliente'}
             return redirect(reenvio)
         return self.render_to_response(self.get_context_data())
 
