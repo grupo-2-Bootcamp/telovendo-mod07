@@ -6,17 +6,18 @@
 
 <!-- Aquí va el formulario para agregar productos al detalle (el modelo Detalles_Pedidos) -->
 
-<div class="row">
+
+<div><p>Aquí puede agregar los productos al pedido. Para finalizar, solo presione el botón de cerrar el pedido.</p></div>
+<div class="row mb-5">
     <div class="col-4">
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary mt-3">Agregar al pedido</button> 
+            <button type="submit" class="btn btn-primary mt-3">Agregar al pedido</button> <a href="{% url 'cierre_pedidos' %}" class="btn btn-primary mt-3">Cerrar el pedido</a> 
         </form>
     </div>
     <div class="col-2">
-        Aquí puede agregar los productos al pedido. Para finalizar, solo presione el botón de cerrar el pedido.
-        <a href="{% url 'cierre_pedidos' %}" class="btn btn-primary mt-3">Cerrar el pedido</a> 
+        
     </div>
 </div>
 

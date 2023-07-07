@@ -109,22 +109,7 @@ class InternoView(TemplateView):                                                
         return render(request, self.template_name, context)
 
 
-class PedidosView(PermissionRequiredMixin, TemplateView):                                   # Vista de todos los pedidos, modulo administración
-    template_name = 'pedidos.html'
-    permission_required = "telovendo.permiso_trabajadores"
-    def get(self, request, *args, **kwargs):
-        request.session.pop('mensajes', None)
-        if request.user.groups.first().id == 1:
-            pedidos = Pedidos.objects.filter(idEmpresa_id=request.user.idEmpresa_id).order_by('id')
-        else:
-            pedidos = Pedidos.objects.all()
-        context ={
-            'title': 'Gestión de pedidos - trabajadores',
-            'pedidos': pedidos
-        }
-        return render(request,self.template_name, context)
-
-class PedidosClienteView(TemplateView):                                                     # Vista de los pedidos, modulo clientes
+class PedidosView(TemplateView):                                                            # Vista de todos los pedidos
     template_name = 'pedidos.html'
     def get(self, request, *args, **kwargs):
         request.session.pop('mensajes', None)
@@ -133,7 +118,7 @@ class PedidosClienteView(TemplateView):                                         
         else:
             pedidos = Pedidos.objects.all()
         context ={
-            'title': 'Gestión de pedidos - clientes',
+            'title': 'Gestión de pedidos',
             'pedidos': pedidos
         }
         return render(request,self.template_name, context)

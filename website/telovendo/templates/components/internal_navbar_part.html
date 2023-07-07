@@ -13,11 +13,7 @@
                 {% if user.groups.first.id == 2 %}
                     <li class="nav-item"> <a class="nav-link active" aria-current="page" href="{% url 'productos' %}"><i class="fa-solid fa-list"></i> Gestión de productos</a> </li>
                 {% endif %}
-                {% if user.groups.first.id == 1 %}
-                    <li class="nav-item"> <a class="nav-link active" aria-current="page" href="{% url 'pedidos-cliente' %}"><i class="fa-solid fa-list"></i> Gestión de pedidos</a> </li>
-                {% elif user.groups.first.id == 2 %}
-                    <li class="nav-item"> <a class="nav-link active" aria-current="page" href="{% url 'pedidos' %}"><i class="fa-solid fa-list"></i> Gestión de pedidos</a> </li>
-                {% endif %}
+                <li class="nav-item"> <a class="nav-link active" aria-current="page" href="{% url 'pedidos' %}"><i class="fa-solid fa-list"></i> Gestión de pedidos</a> </li>
                 <li class="nav-item"> <a class="nav-link active" aria-current="page" href="#"><i class="fa-solid fa-user-large"></i> Mi perfil</a> </li>
             </ul>
             <div class="d-flex">
