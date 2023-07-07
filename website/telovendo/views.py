@@ -20,7 +20,7 @@ def generate_random_password():
 
 # Create your views here.
 
-class LoginView(TemplateView):                                      # Vista de acceso al sistema interno
+class LoginView(TemplateView):                                                              # Vista de acceso al sistema interno
     template_name = 'login.html'
 
     def get(self, request, *args, **kwargs):
@@ -44,116 +44,9 @@ class LoginView(TemplateView):                                      # Vista de a
                     return redirect('internal')
             form.add_error('email', 'Se han ingresado las credenciales equivocadas.')
         return render(request, self.template_name, {'form': form, 'title': title})
-
-class InternoView(TemplateView):                                    # Vista de pagina principal interna
-    template_name = 'internal.html'
-    def get(self, request, *args, **kwargs):
-        primer_nombre = request.user.first_name
-        apellido = request.user.last_name
-        context = {
-            'title': 'Bienvenido al sistema interno de TeLoVendo',
-            'primer_nombre': primer_nombre,
-            'apellido': apellido
-        }
-        return render(request, self.template_name, context)
     
 
-class PedidosView(TemplateView):                                    # Vista de todos los pedidos
-    template_name = 'pedidos.html'
-    def get(self, request, *args, **kwargs):
-        request.session.pop('mensajes', None)
-        if request.user.groups.first().id == 1:
-            pedidos = Pedidos.objects.filter(idEmpresa_id=request.user.idEmpresa_id).order_by('id')
-        else:
-            pedidos = Pedidos.objects.all()
-        context ={
-            'title': 'Gestión de pedidos',
-            'pedidos': pedidos
-        }
-        return render(request,self.template_name, context)
-
-
-class DetallesPedidosView(TemplateView):                            # Listado de detalles de un pedido
-    template_name = 'detalles_pedidos.html'
-    def get(self, request, idpedido, *args, **kwargs):
-        try:
-            pedido = Pedidos.objects.get(id=idpedido)
-        except Pedidos.DoesNotExist:
-            return render(request, 'elemento_no_existe.html')
-        context ={
-            'title': f'Detalle de orden {pedido}',
-            'pedido': pedido,
-            'empresa': Empresas.objects.get(id=pedido.idEmpresa_id),
-            'direccion': Direcciones.objects.get(id=pedido.idDireccion_id),
-            'detalle_pedido': Detalles_Pedido.objects.filter(idPedidos=idpedido).annotate(total=F('cantidad') * F('precio')),
-            'usuario': CustomUser.objects.get(id=pedido.idUsuario_id),
-            'grupo_usuario_actual': request.user.groups.first().id,
-            'total_pedido': Detalles_Pedido.objects.filter(idPedidos=idpedido).aggregate(total=Sum(F('cantidad') * F('precio')))['total'],
-            'mensajes' : request.session.get('mensajes', None),
-            }
-        request.session.pop('mensajes', None)
-        return render(request, self.template_name, context)
-
-class UpdateEstadoPedidoView(TemplateView):                         # Actualiza el estado de los pedidos
-    template_name = 'modifica_estado.html'
-    
-    def get(self, request, *args, **kwargs):
-        idpedido = kwargs['idpedido']
-        try:
-            pedido = Pedidos.objects.get(id=idpedido)
-        except Pedidos.DoesNotExist:
-            return render(request, 'elemento_no_existe.html')
-        pedido = Pedidos.objects.get(id=idpedido)
-        email_cliente =  CustomUser.objects.get(id=pedido.idUsuario_id).email
-        grupo_cliente = CustomUser.objects.get(id=pedido.idUsuario_id).groups.first().id
-        context = {
-            'form': FormularioUpdateEstado(instance=pedido),
-            'idpedido': idpedido,
-            'pedido': pedido,
-            'title': f'Modificar el estado del pedido {idpedido}',
-            'email_cliente': email_cliente,
-            'grupo_cliente': grupo_cliente,
-        }
-        
-        request.session['email_cliente'] = email_cliente
-        request.session['grupo_cliente'] = grupo_cliente
-        return render(request, self.template_name, context)
-
-    def post(self, request, idpedido, *args, **kwargs):             
-        instance = get_object_or_404(Pedidos, id=self.kwargs['idpedido'])
-        form = FormularioUpdateEstado(request.POST, instance=instance)
-        reenvio = reverse('detalle_pedido', kwargs={'idpedido': idpedido})
-        pedido = self.kwargs['idpedido']
-        email_cliente = request.session['email_cliente']
-        grupo_cliente = request.session['grupo_cliente']
-        request.session.pop('email_cliente', None)
-        request.session.pop('grupo_cliente', None)
-        if form.is_valid():
-            form.save()
-            request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha actualizado el estado del pedido'}
-            estado = Pedidos.objects.get(id=pedido).idEstado
-            if grupo_cliente == 1:
-                mensaje = f'''
-                    Cambio de estado de pedido.
-                    El estado del pedido {pedido} ha cambiado, y su nuevo estado es {estado}
-                    En caso de dudas, puede contactanos para revisar nuevamente su pedido.
-
-
-                    Muchas Gracias por su preferencia
-                '''
-                send_mail(
-                    f'[TeLoVendo] - Cambio de estado de pedido número {pedido}',
-                    mensaje,
-                    os.environ.get('EMAIL_HOST_USER'),  # Usar el correo configurado en settings.py
-                    [email_cliente],  # Enviar el correo al destinatario ingresado por el usuario
-                    fail_silently=False
-                )
-                request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha actualizado el estado del pedido y envíado un email al cliente'}
-            return redirect(reenvio)
-        return self.render_to_response(self.get_context_data())
-
-
-class RegistroView(TemplateView):                                   # Crea usuarios
+class RegistroView(TemplateView):                                                           # Crea usuarios
     template_name = 'registro.html'
 
     def get(self, request, *args, **kwargs):
@@ -203,8 +96,115 @@ class RegistroView(TemplateView):                                   # Crea usuar
         }
         return render(request, self.template_name, context)
 
+class InternoView(TemplateView):                                                            # Vista de pagina principal interna
+    template_name = 'internal.html'
+    def get(self, request, *args, **kwargs):
+        primer_nombre = request.user.first_name
+        apellido = request.user.last_name
+        context = {
+            'title': 'Bienvenido al sistema interno de TeLoVendo',
+            'primer_nombre': primer_nombre,
+            'apellido': apellido
+        }
+        return render(request, self.template_name, context)
 
-class ProductosView(PermissionRequiredMixin, TemplateView):                                  # Lista los productos
+
+class PedidosView(TemplateView):                                                            # Vista de todos los pedidos
+    template_name = 'pedidos.html'
+    def get(self, request, *args, **kwargs):
+        request.session.pop('mensajes', None)
+        if request.user.groups.first().id == 1:
+            pedidos = Pedidos.objects.filter(idEmpresa_id=request.user.idEmpresa_id).order_by('id')
+        else:
+            pedidos = Pedidos.objects.all()
+        context ={
+            'title': 'Gestión de pedidos',
+            'pedidos': pedidos
+        }
+        return render(request,self.template_name, context)
+
+
+class DetallesPedidosView(TemplateView):                                                    # Listado de detalles de un pedido
+    template_name = 'detalles_pedidos.html'
+    def get(self, request, idpedido, *args, **kwargs):
+        try:
+            pedido = Pedidos.objects.get(id=idpedido)
+        except Pedidos.DoesNotExist:
+            return render(request, 'elemento_no_existe.html')
+        context ={
+            'title': f'Detalle de orden {pedido}',
+            'pedido': pedido,
+            'empresa': Empresas.objects.get(id=pedido.idEmpresa_id),
+            'direccion': Direcciones.objects.get(id=pedido.idDireccion_id),
+            'detalle_pedido': Detalles_Pedido.objects.filter(idPedidos=idpedido).annotate(total=F('cantidad') * F('precio')),
+            'usuario': CustomUser.objects.get(id=pedido.idUsuario_id),
+            'grupo_usuario_actual': request.user.groups.first().id,
+            'total_pedido': Detalles_Pedido.objects.filter(idPedidos=idpedido).aggregate(total=Sum(F('cantidad') * F('precio')))['total'],
+            'mensajes' : request.session.get('mensajes', None),
+            }
+        request.session.pop('mensajes', None)
+        return render(request, self.template_name, context)
+
+class UpdateEstadoPedidoView(TemplateView):                                                 # Actualiza el estado de los pedidos
+    template_name = 'modifica_estado.html'
+    
+    def get(self, request, *args, **kwargs):
+        idpedido = kwargs['idpedido']
+        try:
+            pedido = Pedidos.objects.get(id=idpedido)
+        except Pedidos.DoesNotExist:
+            return render(request, 'elemento_no_existe.html')
+        pedido = Pedidos.objects.get(id=idpedido)
+        email_cliente =  CustomUser.objects.get(id=pedido.idUsuario_id).email
+        grupo_cliente = CustomUser.objects.get(id=pedido.idUsuario_id).groups.first().id
+        context = {
+            'form': FormularioUpdateEstado(instance=pedido),
+            'idpedido': idpedido,
+            'pedido': pedido,
+            'title': f'Modificar el estado del pedido {idpedido}',
+            'email_cliente': email_cliente,
+            'grupo_cliente': grupo_cliente,
+            'grupo_usuario': request.user.groups.first().id,
+        }
+        
+        request.session['email_cliente'] = email_cliente
+        request.session['grupo_cliente'] = grupo_cliente
+        return render(request, self.template_name, context)
+
+    def post(self, request, idpedido, *args, **kwargs):             
+        instance = get_object_or_404(Pedidos, id=self.kwargs['idpedido'])
+        form = FormularioUpdateEstado(request.POST, instance=instance)
+        reenvio = reverse('detalle_pedido', kwargs={'idpedido': idpedido})
+        pedido = self.kwargs['idpedido']
+        email_cliente = request.session['email_cliente']
+        grupo_cliente = request.session['grupo_cliente']
+        request.session.pop('email_cliente', None)
+        request.session.pop('grupo_cliente', None)
+        if form.is_valid():
+            form.save()
+            request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha actualizado el estado del pedido'}
+            estado = Pedidos.objects.get(id=pedido).idEstado
+            if grupo_cliente == 1:
+                mensaje = f'''
+                    Cambio de estado de pedido.
+                    El estado del pedido {pedido} ha cambiado, y su nuevo estado es {estado}
+                    En caso de dudas, puede contactanos para revisar nuevamente su pedido.
+
+
+                    Muchas Gracias por su preferencia
+                '''
+                send_mail(
+                    f'[TeLoVendo] - Cambio de estado de pedido número {pedido}',
+                    mensaje,
+                    os.environ.get('EMAIL_HOST_USER'),  # Usar el correo configurado en settings.py
+                    [email_cliente],  # Enviar el correo al destinatario ingresado por el usuario
+                    fail_silently=False
+                )
+                request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha actualizado el estado del pedido y envíado un email al cliente'}
+            return redirect(reenvio)
+        return self.render_to_response(self.get_context_data())
+
+class ProductosView(PermissionRequiredMixin, TemplateView):                                 # Lista los productos
     template_name = 'productos.html'
     permission_required = "telovendo.permiso_trabajadores"
     def get(self, request, *args, **kwargs):
@@ -216,7 +216,7 @@ class ProductosView(PermissionRequiredMixin, TemplateView):                     
         request.session.pop('mensajes', None)
         return render(request, self.template_name, context)
 
-class ProductoCreateView(PermissionRequiredMixin, TemplateView): 
+class ProductoCreateView(PermissionRequiredMixin, TemplateView):                            # Crea producto
     template_name = 'agregar_producto.html'
     permission_required = "telovendo.permiso_trabajadores"
     def get(self, request, *args, **kwargs):
@@ -255,7 +255,7 @@ class ProductoCreateView(PermissionRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-class ProductoEditView(PermissionRequiredMixin, TemplateView):
+class ProductoEditView(PermissionRequiredMixin, TemplateView):                              # Edición de productos
     template_name = 'editar_producto.html'
     permission_required = "telovendo.permiso_trabajadores"
 
@@ -293,7 +293,7 @@ class ProductoEditView(PermissionRequiredMixin, TemplateView):
             }
             return render(request, self.template_name, context)
     
-class ProductoDeleteView(PermissionRequiredMixin, DeleteView):                                           # Elimina productos
+class ProductoDeleteView(PermissionRequiredMixin, DeleteView):                              # Elimina productos
     model = Productos
     permission_required = "telovendo.permiso_trabajadores"
     template_name = 'eliminar_producto.html'
@@ -302,7 +302,7 @@ class ProductoDeleteView(PermissionRequiredMixin, DeleteView):                  
         return reverse('productos')
     
 
-class AddPedidosPasoUnoView(TemplateView):                                         # Agrega pedidos
+class AddPedidosPasoUnoView(TemplateView):                                                  # Agrega pedidos
     template_name  = 'agregar_pedido_paso_uno.html'
     def get(self, request, *args, **kwargs):
         
@@ -325,7 +325,7 @@ class AddPedidosPasoUnoView(TemplateView):                                      
         request.session['mensajes'] = {'enviado': True, 'resultado': 'Se ha seleccionado una empresa, ahora hay que completar algunos datos'}
         return redirect('nuevo_pedido_paso_dos')
 
-class AddPedidosPasoDosView(TemplateView):                                             # Agrega pedidos
+class AddPedidosPasoDosView(TemplateView):                                                  # Agrega pedidos - paso 2
     template_name = 'agregar_pedido_paso_dos.html'
 
     def get(self, request, *args, **kwargs):
@@ -368,7 +368,7 @@ class AddPedidosPasoDosView(TemplateView):                                      
             }
         return render(request, self.template_name, context)
     
-class AddPedidosPasoTresView(TemplateView):
+class AddPedidosPasoTresView(TemplateView):                                                 # Agrega pedidos - paso 3
     template_name = 'agregar_pedido_paso_tres.html'
 
     def get(self, request, *args, **kwargs):
@@ -406,7 +406,7 @@ class AddPedidosPasoTresView(TemplateView):
         }
         return render(request, self.template_name, context)
 
-class CierrePedidoView(TemplateView):
+class CierrePedidoView(TemplateView):                                                       # Agrega pedidos - cierre del pedido
     template_name = 'cierre_pedido.html'
 
     def get(self, request, *args, **kwargs):

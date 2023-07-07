@@ -29,7 +29,7 @@
                 {% elif pedido.idEstado_id == 5 %} <!-- 5: Cancelado -->
                     <p class="btn btn-secondary">{{ pedido.idEstado }}</p>
                 {% endif %}
-                {% if grupo_usuario_actual == 2 and pedido.idEstado_id  != 5 %}
+                {% if pedido.idEstado_id  != 5 %}
                     <a href="/internal/pedidos/orden/{{ pedido.id }}/modifica/estado"><p class="btn btn-primary">Modificar estado</p></a>
                 {% endif %}
             </td>
@@ -83,18 +83,18 @@
         <tr>
             <th scope="col">Empresa</th>
             <th scope="col">RUT</th>
-            <th scope="col">Usuario que genero el pedido, y área</th>
+            <th scope="col">Usuario que genero el pedido </th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>{{ empresa.nombre_empresa }}</td>
             <td>{{ empresa.rut }}</td>
-            <td>{{ usuario.first_name }} {{ usuario.last_name }} ({{ usuario }}) - 
+            <td>{{ usuario.first_name }} {{ usuario.last_name }} - 
                 {% if usuario.groups.first.id == 1%}
-                    Cliente
+                    <button type="button" class="btn btn-outline-primary">Cliente</button>
                 {% elif usuario.groups.first.id == 2 %}
-                    Área interna TeLoVendo
+                    <button type="button" class="btn btn-outline-primary">Atención TeLoVendo</button>
                 {% endif %}
         </tr>
     </tbody>

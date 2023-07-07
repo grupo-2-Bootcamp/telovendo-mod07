@@ -6,7 +6,7 @@
     <div class="col-sm-12 col-md-6">
         <div class="row">
             <div class="col-sm-12 col-lg-6">
-                <h4>Estado actual del pedido:</h4>
+                <h4>Estado del pedido:</h4>
             </div>
             <div class="col-sm-12 col-lg-6">
                 {% if pedido.idEstado_id   == 1 %} <!-- 1: En preparación -->
@@ -24,16 +24,26 @@
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
-        {% if pedido.idEstado_id != 5 %}
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary mt-3">Actualizar estado de pedido</button> <a href="{% url 'detalle_pedido' idpedido=pedido.id %}" class="btn btn-primary mt-3">Volver atrás</a>
-        </form>
-            {% else %}
-                <h5>Esta orden esta cancelada, por lo que ya no se puede modificar su estado.</h5>
-                <a href="{% url 'detalle_pedido' idpedido=pedido.id %}" class="btn btn-primary mt-3">Volver atrás</a>
+        
+            {% if grupo_usuario == 1 %}
+                {% if pedido.idEstado_id == 1 or pedido.idEstado_id == 2 %}
+                Puede cancelar el pedido con la siguiente opción: 
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="idEstado" id="id_idEstado" value="5">
+                        <button type="submit" class="btn btn-primary mt-3">Cancelar pedido</button> <a href="{% url 'detalle_pedido' idpedido=pedido.id %}" class="btn btn-primary mt-3">Volver atrás</a>
+                    </form>
+                {% else %}
+                    <a href="{% url 'detalle_pedido' idpedido=pedido.id %}" class="btn btn-primary mt-3">Volver atrás</a>
+                {% endif %}
+            {% elif grupo_usuario == 2 %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary mt-3">Actualizar estado de pedido</button> <a href="{% url 'detalle_pedido' idpedido=pedido.id %}" class="btn btn-primary mt-3">Volver atrás</a>
+                </form>
             {% endif %}
+
     </div>
 </div>
 
