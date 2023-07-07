@@ -240,6 +240,7 @@ class ProductoCreateView(PermissionRequiredMixin, TemplateView):                
                 descripcion= form.cleaned_data['descripcion'],
                 precio= form.cleaned_data['precio'],
                 stock= form.cleaned_data['stock'],
+                categoria = form.cleaned_data['idCategoria'],
                 image = image
             )
             registro.save()

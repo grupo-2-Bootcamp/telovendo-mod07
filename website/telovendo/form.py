@@ -251,7 +251,7 @@ class FormularioEditarProductos(forms.ModelForm):
                                             'class':'form-control'}),
                                     )
     
-    idCategoria = forms.ModelChoiceField(label='Categoría', empty_label=('Seleccione una categoría'),
+    categoria = forms.ModelChoiceField(label='Categoría', empty_label=('Seleccione una categoría'),
                                         queryset=Categoria.objects.all(), required=False, 
                                         widget= forms.Select(attrs={
                                             'class':'form-select'}),)
@@ -263,7 +263,7 @@ class FormularioEditarProductos(forms.ModelForm):
 
     class Meta:
         model = Productos
-        fields = ['nombre', 'descripcion', 'stock', 'precio', 'idCategoria', 'image']
+        fields = ['nombre', 'descripcion', 'stock', 'precio', 'categoria', 'image']
 
 class FormularioPedidos(forms.ModelForm):
     
