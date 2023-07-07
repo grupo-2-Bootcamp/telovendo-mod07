@@ -155,12 +155,13 @@ AUTH_USER_MODEL = 'telovendo.CustomUser'
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-EMAIL_HOST = 'mail.fabricadecodigo.dev'
-EMAIL_PORT = 2525
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'talento@fabricadecodigo.dev'
-EMAIL_HOST_PASSWORD = 'talento.,2023'
+
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

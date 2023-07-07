@@ -38,13 +38,20 @@ El programa está configurado para usar PostgreSQL como motor de base de datos
 
 5.  Cree un archivo .env en el directorio raíz del sistema y proporcione los datos para acceder a una base de datos de PostgreSQL:
 
-        SECRET_KEY= 'Secret_key'     # secret_key de Django
+        SECRET_KEY= 'Secret_key'            # secret_key de Django
         DB_ENGINE= 'django.db.backends.postgresql_psycopg2'
-        DB_DATABASE= 'database'      # Nombre de la base de datos
-        DB_USER= 'user'              # Usuario de la base de datos
-        DB_PASSWORD= 'password'      # Contraseña del usuario 
-        DB_HOST= 'host'              # Dirección del servidor PostgreSQL 
-        DB_PORT= '5432'              # Puerto del servidor PostgreSQL, habitualmente 5432
+        DB_DATABASE= 'database'             # Nombre de la base de datos
+        DB_USER= 'user'                     # Usuario de la base de datos
+        DB_PASSWORD= 'password'             # Contraseña del usuario 
+        DB_HOST= 'host'                     # Dirección del servidor PostgreSQL 
+        DB_PORT= '5432'                     # Puerto del servidor PostgreSQL, habitualmente 5432
+        
+        EMAIL_HOST = 'mailserver'           # Nombre del servidor SMTP
+        EMAIL_PORT = 'hostport'             # Puerto del servidor
+        EMAIL_USE_TLS = False               # Si el servidor usa TLS o no
+        EMAIL_USE_SSL = False               # Si el servidor usa SSL o no
+        EMAIL_HOST_USER = 'user'            # Usuario
+        EMAIL_HOST_PASSWORD = 'password'    # Contraseña del usuario de correo
 
 6.  Finalmente para ejecutar el proyecto utilice el comando
         (.venv) python manage.py runserver
