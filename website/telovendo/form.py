@@ -256,7 +256,10 @@ class FormularioEditarProductos(forms.ModelForm):
                                         widget= forms.Select(attrs={
                                             'class':'form-select'}),)
     
-    image = forms.ImageField(label='Foto del Producto', required=False)
+    image = forms.ImageField(label='Foto del Producto', required=False,
+                            widget= forms.FileInput(attrs={
+                                'class': 'form-control-file'
+                            }))
 
     class Meta:
         model = Productos
