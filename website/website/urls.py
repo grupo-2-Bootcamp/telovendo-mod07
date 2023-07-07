@@ -24,7 +24,7 @@ from django.contrib.auth.decorators import login_required
 from mainsite.views import Index, CatalogoIndex, CatalogoList
 
 # Vistas de la app principal
-from telovendo.views import LoginView, InternoView, PedidosView, RegistroView, DetallesPedidosView, UpdateEstadoPedidoView, ProductosView, ProductoEditView, ProductoCreateView, ProductoDeleteView, AddPedidosPasoUnoView, AddPedidosPasoDosView, AddPedidosPasoTresView, CierrePedidoView
+from telovendo.views import LoginView, InternoView, PedidosView, PedidosClienteView, RegistroView, DetallesPedidosView, UpdateEstadoPedidoView, ProductosView, ProductoEditView, ProductoCreateView, ProductoDeleteView, AddPedidosPasoUnoView, AddPedidosPasoDosView, AddPedidosPasoTresView, CierrePedidoView
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -39,6 +39,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('internal/home', login_required(InternoView.as_view()), name='internal'),
     path('internal/pedidos', login_required(PedidosView.as_view()), name = 'pedidos'),
+    path('internal/pedidos-cliente', login_required(PedidosClienteView.as_view()), name = 'pedidos-cliente'),
     path('internal/pedidos/orden/<int:idpedido>', login_required(DetallesPedidosView.as_view()), name='detalle_pedido'),
     path('internal/pedidos/orden/<int:idpedido>/modifica/estado', login_required(UpdateEstadoPedidoView.as_view()), name='modifica_estado_pedido'),
     path('internal/pedidos/agregar/paso-uno', login_required(AddPedidosPasoUnoView.as_view()), name='nuevo_pedido'),
